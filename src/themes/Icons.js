@@ -5,6 +5,9 @@ const Icons = {
 	flagIcon: require('../assets/fonts/flag.svg'),
 	plusIcon: require('../assets/fonts/plus.svg'),
 	searchIcon: require('../assets/fonts/search.svg'),
+	menuIcon: require('../assets/fonts/menu.svg'),
+	blackPlusIcon: require('../assets/fonts/blackPlus.svg'),
+	clockIcon: require('../assets/fonts/clock.svg'),
 };
 
 export { Icons };
