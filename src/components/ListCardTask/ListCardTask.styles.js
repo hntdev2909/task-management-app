@@ -11,6 +11,8 @@ const ListCardCount = styled.span`
 	margin-left: 10px;
 `;
 
+const ListCard = styled.div``;
+
 const ListCardIcon = styled.img``;
 
 const ListCardButton = styled.a`
@@ -70,4 +72,5 @@ export {
 	ListCardButton,
 	ListCardIcon,
 	ListCardTitle,
+	ListCard,
 };

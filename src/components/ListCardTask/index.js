@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import _ from 'lodash';
+import { Droppable } from 'react-beautiful-dnd';
 import {
 	ListCardTaskContainer,
 	ListCardTaskItem,
@@ -8,19 +10,21 @@ import {
 	ListCardModule,
 	ListCardTitle,
 	ListCardCount,
+	ListCard,
 } from './ListCardTask.styles';
 
 import CardTask from '../CardTask';
 
 import { Icons } from '../../themes';
 
-function ListCardTask() {
+function ListCardTask({ column, tasks }) {
 	return (
 		<ListCardTaskContainer>
 			<ListCardTaskItem>
 				<ListCardHeader>
 					<ListCardTitle>
-						To do<ListCardCount>3</ListCardCount>
+						{column.title}
+						<ListCardCount>{column.tasksId.length}</ListCardCount>
 					</ListCardTitle>
 					<ListCardModule>
 						<ListCardButton hoverBgColor="#d0d5d8">
@@ -39,11 +43,19 @@ function ListCardTask() {
 						</ListCardButton>
 					</ListCardModule>
 				</ListCardHeader>
-				<CardTask />
-				<CardTask />
-				<CardTask />
+
+				<Droppable droppableId={column.id}>
+					{(provided) => (
+						<ListCard ref={provided.innerRef} {...provided.droppableProps}>
+							{_.map(tasks, (task, index) => (
+								<CardTask index={index} key={task.id} task={task} />
+							))}
+							{provided.placeholder}
+						</ListCard>
+					)}
+				</Droppable>
 			</ListCardTaskItem>
-			<ListCardTaskItem>
+			{/* <ListCardTaskItem>
 				<ListCardHeader>
 					<ListCardTitle>
 						In progress<ListCardCount>2</ListCardCount>
@@ -111,7 +123,7 @@ function ListCardTask() {
 						</ListCardButton>
 					</ListCardModule>
 				</ListCardHeader>
-			</ListCardTaskItem>
+			</ListCardTaskItem> */}
 		</ListCardTaskContainer>
 	);
 }
