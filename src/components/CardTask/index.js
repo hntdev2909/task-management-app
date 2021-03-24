@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import { Draggable } from 'react-beautiful-dnd';
 import {
 	CardTaskContainer,
@@ -15,6 +16,7 @@ import {
 	CardTaskParagraph,
 	CardTaskText,
 	CardTaskListMember,
+	CardTaskListImageMember,
 } from './CardTask.styles';
 
 import { Icons } from '../../themes';
@@ -29,14 +31,14 @@ function CardTask({ task, index }) {
 					{...provided.dragHandleProps}
 				>
 					<CardTaskContent>
-						<CardTaskTitle>Mobile Wireframes</CardTaskTitle>
+						<CardTaskTitle>{task.title}</CardTaskTitle>
 						<CardTaskParagraph>
 							{task.content}
-							{/* Some methods maybe better than others, depending on time constraints,
-					system maturity, type of product. Regardless of who is perusing the
-					report, what is sought is accurate information revealing an overall */}
+							{/* Some methods maybe better than others, depending on time constraints,	system maturity, type of product. Regardless of who isperusing thereport, what is sought is accurate information revealing an overall */}
 						</CardTaskParagraph>
-						<CardTaskTag>Viverra diam</CardTaskTag>
+						<CardTaskTag bgColor={task.tag.bgColor} color={task.tag.color}>
+							{task.tag.name}
+						</CardTaskTag>
 					</CardTaskContent>
 					<CardTaskFooter>
 						<CardTaskModule>
@@ -65,7 +67,15 @@ function CardTask({ task, index }) {
 							</CardTaskTime>
 						</CardTaskModule>
 						<CardTaskListMember>
-							<CardTaskImage src="https://www.w3schools.com/html/img_girl.jpg" />
+							{_.map(task.member, (member, index) => {
+								let right = 25;
+								console.log(right * index);
+								return (
+									<CardTaskListImageMember right={right * index + 'px'}>
+										<CardTaskImage src={member.image} />
+									</CardTaskListImageMember>
+								);
+							})}
 						</CardTaskListMember>
 					</CardTaskFooter>
 				</CardTaskContainer>

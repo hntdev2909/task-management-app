@@ -63,8 +63,11 @@ const ListCardTaskContainer = styled.div`
 	padding: 20px 50px;
 `;
 
+const ListCardDiv = styled.div``;
+
 export {
 	ListCardTaskContainer,
+	ListCardDiv,
 	ListCardCount,
 	ListCardModule,
 	ListCardTaskItem,

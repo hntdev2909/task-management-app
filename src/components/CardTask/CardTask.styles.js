@@ -12,7 +12,7 @@ const CardTaskParagraph = styled.p`
 `;
 
 const CardTaskTitle = styled.p`
-	font-size: 0.95rem;
+	font-size: 1.05rem;
 	font-weight: 500;
 `;
 
@@ -42,9 +42,19 @@ const CardTaskImage = styled.img`
 	border: 2px solid white;
 `;
 
-const CardTaskListMember = styled.div`
+const CardTaskListImageMember = styled.div`
 	width: 34px;
 	height: 34px;
+	position: absolute;
+	right: ${(props) => props.right};
+`;
+
+const CardTaskListMember = styled.div`
+	width: 50px;
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 `;
 
 const CardTaskText = styled.p`
@@ -93,6 +103,7 @@ export {
 	CardTaskContainer,
 	CardTaskModule,
 	CardTaskTime,
+	CardTaskListImageMember,
 	CardTaskFlag,
 	CardTaskAttach,
 	CardTaskFooter,
