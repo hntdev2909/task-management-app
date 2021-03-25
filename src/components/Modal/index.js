@@ -49,26 +49,44 @@ function Modal({ display, callback, btnModal, taskEditing }) {
 		if (taskEditing) {
 			if (btnModal === 'Lưu') {
 				taskKey = taskEditing.id;
-			} else {
-				taskKey = `task-${Object.keys(tasks).length + 1}`;
-			}
-			const newData = {
-				id: taskKey,
-				title: title,
-				tag: {
-					name: tag,
-					bgColor: bgColor,
-					color: textColor,
-				},
-				content: description,
-				createdAt: moment().format('MMM Do'),
-			};
 
+				dispatch({
+					type: 'EDIT_TASK',
+					payload: {
+						taskId: taskKey,
+						newData: {
+							id: taskKey,
+							title: title,
+							tag: {
+								name: tag,
+								bgColor: bgColor,
+								color: textColor,
+							},
+							content: description,
+							createdAt: moment().format('MMM Do'),
+						},
+					},
+				});
+			}
+		}
+
+		if (btnModal === 'Thêm') {
+			taskKey = `task-${Object.keys(tasks).length + 1}`;
 			dispatch({
-				type: 'EDIT_TASK',
+				type: 'ADD_NEW_TASK',
 				payload: {
-					taskId: taskEditing.id,
-					newData,
+					taskId: taskKey,
+					newData: {
+						id: taskKey,
+						title: title,
+						tag: {
+							name: tag,
+							bgColor: bgColor,
+							color: textColor,
+						},
+						content: description,
+						createdAt: moment().format('MMM Do'),
+					},
 				},
 			});
 		}

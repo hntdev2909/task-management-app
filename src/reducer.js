@@ -99,6 +99,26 @@ const reducer = (state, action) => {
 					[action.payload.taskId]: action.payload.newData,
 				},
 			};
+		case 'ADD_NEW_TASK':
+			return {
+				...state,
+				columns: {
+					...state.columns,
+					['column-1']: {
+						...state.columns['column-1'],
+						tasksId: [
+							...state.columns['column-1'].tasksId,
+							action.payload.taskId,
+						],
+					},
+				},
+				tasks: {
+					...state.tasks,
+					[action.payload.taskId]: action.payload.newData,
+				},
+			};
+		case 'DELETE_TASK':
+			return;
 		default:
 			return;
 	}
