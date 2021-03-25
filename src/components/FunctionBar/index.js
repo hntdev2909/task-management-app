@@ -9,7 +9,11 @@ import {
 } from './FunctionBar.styles';
 import { Icons } from '../../themes';
 
-function FunctionBar() {
+function FunctionBar({ callback }) {
+	const handleCreateNewTask = () => {
+		callback('open');
+	};
+
 	return (
 		<FunctionBarContainer>
 			<FunctionBarSearch>
@@ -25,6 +29,7 @@ function FunctionBar() {
 					bgColor="#004cff"
 					color="white"
 					hoverBgColor="#0b54ff"
+					onClick={handleCreateNewTask}
 				>
 					<FunctionBarIcon
 						width="14px"

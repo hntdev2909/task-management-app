@@ -63,15 +63,17 @@ function CardTask({ task, index }) {
 									height="18px"
 									src={Icons.clockIcon.default}
 								/>
-								<CardTaskText>Apr 12</CardTaskText>
+								<CardTaskText>{task.createdAt}</CardTaskText>
 							</CardTaskTime>
 						</CardTaskModule>
 						<CardTaskListMember>
 							{_.map(task.member, (member, index) => {
 								let right = 25;
-								console.log(right * index);
 								return (
-									<CardTaskListImageMember right={right * index + 'px'}>
+									<CardTaskListImageMember
+										key={index}
+										right={right * index + 'px'}
+									>
 										<CardTaskImage src={member.image} />
 									</CardTaskListImageMember>
 								);

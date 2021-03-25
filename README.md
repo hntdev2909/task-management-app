@@ -1,9 +1,8 @@
 # Task
 
-- Drag and drop
-- Add new task
+- Form add new, edit and watch
 - Delete task
-- Detail task
+- CSS: min-width list task, 3 buttons of function module
 
 # Getting Started with Create React App
 

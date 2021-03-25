@@ -8,6 +8,10 @@ const Icons = {
 	menuIcon: require('../assets/fonts/menu.svg'),
 	blackPlusIcon: require('../assets/fonts/blackPlus.svg'),
 	clockIcon: require('../assets/fonts/clock.svg'),
+	speakerIcon: require('../assets/fonts/speaker.svg'),
+	fullScreenIcon: require('../assets/fonts/full-screen.svg'),
+	closeIcon: require('../assets/fonts/close.svg'),
+	deleteIcon: require('../assets/fonts/delete.svg'),
 };
 
 export { Icons };

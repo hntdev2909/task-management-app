@@ -1,7 +1,5 @@
 import { Images } from '../themes';
 
-console.log(Images.img1.default);
-
 const initialData = {
 	tasks: {
 		'task-1': {
@@ -20,6 +18,7 @@ const initialData = {
 					image: Images.img1.default,
 				},
 			],
+			createdAt: 'Apr 23',
 		},
 		'task-2': {
 			id: 'task-2',
@@ -41,6 +40,7 @@ const initialData = {
 					image: Images.img2.default,
 				},
 			],
+			createdAt: 'Apr 22',
 		},
 		'task-3': {
 			id: 'task-3',
@@ -58,6 +58,7 @@ const initialData = {
 					image: Images.img2.default,
 				},
 			],
+			createdAt: 'Sep 12',
 		},
 		'task-4': {
 			id: 'task-4',
@@ -75,6 +76,7 @@ const initialData = {
 					image: Images.img1.default,
 				},
 			],
+			createdAt: 'Jun 20',
 		},
 	},
 	columns: {
