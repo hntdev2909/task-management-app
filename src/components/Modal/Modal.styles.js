@@ -65,6 +65,7 @@ const ModalTextArea = styled.textarea`
 	font-size: 1.05rem;
 	outline: none;
 	flex: 1;
+	font-family: inherit;
 `;
 const ModalInput = styled.input`
 	font-size: 1.05rem;

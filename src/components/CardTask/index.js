@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
 import { Draggable } from 'react-beautiful-dnd';
 import {
@@ -21,7 +21,11 @@ import {
 
 import { Icons } from '../../themes';
 
-function CardTask({ task, index }) {
+function CardTask({ task, index, callback }) {
+	const handleClickTask = (taskId) => {
+		callback(taskId, 'Lưu');
+	};
+
 	return (
 		<Draggable draggableId={task.id} index={index}>
 			{(provided) => (
@@ -29,6 +33,7 @@ function CardTask({ task, index }) {
 					ref={provided.innerRef}
 					{...provided.draggableProps}
 					{...provided.dragHandleProps}
+					onClick={() => handleClickTask(task.id)}
 				>
 					<CardTaskContent>
 						<CardTaskTitle>{task.title}</CardTaskTitle>

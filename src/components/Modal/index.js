@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
 	ModalContainer,
 	ModalHeader,
@@ -22,52 +22,75 @@ import {
 } from './Modal.styles';
 import { Icons } from '../../themes';
 import moment from 'moment';
+import _ from 'lodash';
 import CardReview from '../CardReview';
+import { useStateValue } from '../../StateProvider';
 
-function Modal({ display, callback, callbackData, data }) {
+function Modal({ display, callback, btnModal, taskEditing }) {
+	const [{ tasks }, dispatch] = useStateValue();
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
 	const [tag, setTag] = useState('');
-	const [color, setColor] = useState('');
-	// const [image, setImage] = useState('');
+	const [color, setColor] = useState('#f6fdf7+#3db452');
 
 	const handleCloseModal = () => {
-		callback(true);
+		callback('close');
+		setTitle('');
+		setDescription('');
+		setTag('');
 	};
 
-	const handleAddNewTask = (values) => {
+	const handleSaveTask = () => {
 		const tmpColor = color?.split('+');
 		const bgColor = tmpColor[0];
 		const textColor = tmpColor[1];
-		const newData = {
-			id: `task-${Object.keys(data.tasks).length + 1}`,
-			title: title,
-			tag: {
-				name: tag,
-				bgColor: bgColor,
-				color: textColor,
-			},
-			content: description,
-			createdAt: moment().format('MMM Do'),
-		};
+		let taskKey;
 
-		callbackData(newData);
-		callback(true);
+		if (taskEditing) {
+			if (btnModal === 'Lưu') {
+				taskKey = taskEditing.id;
+			} else {
+				taskKey = `task-${Object.keys(tasks).length + 1}`;
+			}
+			const newData = {
+				id: taskKey,
+				title: title,
+				tag: {
+					name: tag,
+					bgColor: bgColor,
+					color: textColor,
+				},
+				content: description,
+				createdAt: moment().format('MMM Do'),
+			};
+
+			dispatch({
+				type: 'EDIT_TASK',
+				payload: {
+					taskId: taskEditing.id,
+					newData,
+				},
+			});
+		}
+		callback('close');
 		setTitle('');
 		setDescription('');
 		setTag('');
 		setColor('');
+		taskKey = '';
 	};
-
-	// const handleSelectImage = (val) => {
-	// 	const selectedFile = document.getElementById('image').files[0];
-	// 	console.log(selectedFile);
-	// 	setImage(selectedFile.name);
-	// };
 
 	const handleSelectRadio = (value) => {
 		setColor(value);
 	};
+
+	useEffect(() => {
+		if (taskEditing) {
+			setTitle(taskEditing?.title);
+			setDescription(taskEditing?.content);
+			setTag(taskEditing?.tag?.name);
+		}
+	}, [taskEditing]);
 
 	return (
 		<ModalContainer display={display}>
@@ -152,6 +175,7 @@ function Modal({ display, callback, callbackData, data }) {
 										onClick={(e) => handleSelectRadio(e.target.value)}
 										type="radio"
 										name="color"
+										defaultChecked
 									/>{' '}
 									Color 1
 								</ModalLabel>
@@ -174,7 +198,7 @@ function Modal({ display, callback, callbackData, data }) {
 									Color 3
 								</ModalLabel>
 							</ModalFormControl>
-							<ModalSubmit onClick={handleAddNewTask}>Thêm</ModalSubmit>
+							<ModalSubmit onClick={handleSaveTask}>{btnModal}</ModalSubmit>
 						</ModalForm>
 					</ModalContentPost>
 					<ModalContentDescription>

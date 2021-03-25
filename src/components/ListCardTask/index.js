@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import _ from 'lodash';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import { useStateValue } from '../../StateProvider';
 import {
 	ListCardTaskContainer,
 	ListCardTaskItem,
@@ -11,14 +12,19 @@ import {
 	ListCardTitle,
 	ListCardCount,
 	ListCard,
-	ListCardDiv,
 } from './ListCardTask.styles';
 
 import CardTask from '../CardTask';
 
 import { Icons } from '../../themes';
 
-function ListCardTask({ data, callback }) {
+function ListCardTask({ callback }) {
+	const [{ tasks, columns, columnOrder }, dispatch] = useStateValue();
+
+	const openTaskToEdit = (id) => {
+		callback('Lưu', id);
+	};
+
 	const onDragEnd = (result) => {
 		const { destination, source, draggableId } = result;
 
@@ -33,73 +39,64 @@ function ListCardTask({ data, callback }) {
 			return;
 		}
 
-		const tmpData = { ...data };
-		const column = result.destination.droppableId;
-
-		const start = tmpData.columns[source.droppableId];
-		const finish = tmpData.columns[destination.droppableId];
+		const start = columns[source.droppableId];
+		const finish = columns[destination.droppableId];
 
 		if (start === finish) {
+			const col = source.droppableId;
 			const newTaskIds = Array.from(start.tasksId);
 			newTaskIds.splice(source.index, 1);
 			newTaskIds.splice(destination.index, 0, draggableId);
 
-			const newColumn = {
-				...start,
-				tasksId: newTaskIds,
-			};
-
-			console.log();
-
-			const newData = {
-				...tmpData,
-				columns: {
-					...tmpData.columns,
-					[newColumn.id]: newColumn,
+			dispatch({
+				type: 'CHANGE_ROW_IN_COL',
+				payload: {
+					col,
+					newTaskIds,
 				},
+			});
+		} else {
+			const startTasksId = Array.from(start.tasksId);
+			startTasksId.splice(source.index, 1);
+			const newStart = {
+				...start,
+				tasksId: startTasksId,
 			};
-			callback(newData);
-			return;
+
+			const finishTasksId = Array.from(finish.tasksId);
+			finishTasksId.splice(destination.index, 0, draggableId);
+			const newFinish = {
+				...finish,
+				tasksId: finishTasksId,
+			};
+
+			dispatch({
+				type: 'CHANGE_ROW_WITH_ROW',
+				payload: {
+					columns: {
+						...columns,
+						[newStart.id]: newStart,
+						[newFinish.id]: newFinish,
+					},
+				},
+			});
 		}
-
-		const startTasksId = Array.from(start.tasksId);
-		startTasksId.splice(source.index, 1);
-		const newStart = {
-			...start,
-			tasksId: startTasksId,
-		};
-
-		const finishTasksId = Array.from(finish.tasksId);
-		finishTasksId.splice(destination.index, 0, draggableId);
-		const newFinish = {
-			...finish,
-			tasksId: finishTasksId,
-		};
-
-		const newData = {
-			...tmpData,
-			columns: {
-				...tmpData.columns,
-				[newStart.id]: newStart,
-				[newFinish.id]: newFinish,
-			},
-		};
-
-		callback(newData);
 	};
 
 	return (
 		<ListCardTaskContainer>
 			<DragDropContext onDragEnd={onDragEnd}>
-				{_.map(data.columnOrder, (columnId, index) => {
-					const column = data.columns[columnId];
-					const tasks = _.map(column.tasksId, (taskId) => data.tasks[taskId]);
+				{_.map(columnOrder, (columnId, index) => {
+					const column = columns[columnId];
+					const todos = _.map(column.tasksId, (taskId) => {
+						return tasks[taskId];
+					});
 					return (
 						<ListCardTaskItem key={index}>
 							<ListCardHeader>
 								<ListCardTitle>
 									{column.title}
-									<ListCardCount>{tasks.length}</ListCardCount>
+									<ListCardCount>{todos.length}</ListCardCount>
 								</ListCardTitle>
 								<ListCardModule>
 									<ListCardButton hoverBgColor="#d0d5d8">
@@ -124,8 +121,13 @@ function ListCardTask({ data, callback }) {
 										ref={provided.innerRef}
 										{...provided.droppableProps}
 									>
-										{_.map(tasks, (task, index) => (
-											<CardTask index={index} key={task.id} task={task} />
+										{_.map(todos, (task, index) => (
+											<CardTask
+												index={index}
+												key={task.id}
+												task={task}
+												callback={openTaskToEdit}
+											/>
 										))}
 										{provided.placeholder}
 									</ListCard>

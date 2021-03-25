@@ -10,8 +10,8 @@ import {
 import { Icons } from '../../themes';
 
 function FunctionBar({ callback }) {
-	const handleCreateNewTask = () => {
-		callback('open');
+	const handleOpenModal = () => {
+		callback('Thêm');
 	};
 
 	return (
@@ -29,7 +29,7 @@ function FunctionBar({ callback }) {
 					bgColor="#004cff"
 					color="white"
 					hoverBgColor="#0b54ff"
-					onClick={handleCreateNewTask}
+					onClick={handleOpenModal}
 				>
 					<FunctionBarIcon
 						width="14px"

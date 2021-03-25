@@ -18,6 +18,7 @@ import {
 	CardReviewImageContent,
 } from './CardReview.styles';
 import { Icons, Images } from '../../themes';
+import moment from 'moment';
 
 function CardReview({ title, description, tag, color }) {
 	const [textColor, setTextColor] = useState('');
@@ -49,7 +50,7 @@ function CardReview({ title, description, tag, color }) {
 							height="18px"
 							src={Icons.attachIcon.default}
 						/>
-						<CardReviewText>3</CardReviewText>
+						<CardReviewText></CardReviewText>
 					</CardReviewAttach>
 					<CardReviewFlag>
 						<CardReviewIcon
@@ -64,7 +65,7 @@ function CardReview({ title, description, tag, color }) {
 							height="18px"
 							src={Icons.clockIcon.default}
 						/>
-						<CardReviewText>Apr 12</CardReviewText>
+						<CardReviewText>{moment().format('MMM Do')}</CardReviewText>
 					</CardReviewTime>
 				</CardReviewModule>
 				<CardReviewListMember>
