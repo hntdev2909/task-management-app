@@ -5,7 +5,13 @@ export const StateContext = createContext();
 
 // Wrap our app and provide the Data layer
 export const StateProvider = ({ reducer, initialState, children }) => (
-	<StateContext.Provider value={useReducer(reducer, initialState)}>
+	<StateContext.Provider
+		value={useReducer(reducer, {}, () => {
+			const localData = localStorage.getItem('listTasks');
+
+			return localData ? JSON.parse(localData) : initialState;
+		})}
+	>
 		{children}
 	</StateContext.Provider>
 );

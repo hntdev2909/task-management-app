@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { HomepageContainer, HomepageMaxWidth } from './Homepage.styles';
 import { Header, FunctionBar, ListCardTask, Modal } from '../../components';
 import { useStateValue } from '../../StateProvider';
@@ -7,7 +7,7 @@ function Homepage() {
 	const [isOpenModal, setIsOpenModal] = useState(false);
 	const [btnModal, setBtnModal] = useState('');
 
-	const [{ tasks }, dispatch] = useStateValue();
+	const [{ tasks, columns, columnOrder }, dispatch] = useStateValue();
 	const [taskEditing, setTaskEditing] = useState({});
 
 	const handleIsOpenModal = (textBtn, id) => {
@@ -17,6 +17,15 @@ function Homepage() {
 			setTaskEditing(tasks[id]);
 		}
 	};
+
+	useEffect(() => {
+		const setDataLocal = {
+			tasks,
+			columns,
+			columnOrder,
+		};
+		localStorage.setItem('listTasks', JSON.stringify(setDataLocal));
+	}, [tasks, columns]);
 
 	return (
 		<HomepageContainer>

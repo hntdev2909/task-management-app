@@ -54,7 +54,7 @@ function CardTask({ task, index, callback }) {
 									height="18px"
 									src={Icons.attachIcon.default}
 								/>
-								<CardTaskText>3</CardTaskText>
+								<CardTaskText>{task?.member?.length}</CardTaskText>
 							</CardTaskAttach>
 							<CardTaskFlag>
 								<CardTaskIcon

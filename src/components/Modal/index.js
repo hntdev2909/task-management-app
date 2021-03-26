@@ -24,9 +24,10 @@ import { Icons } from '../../themes';
 import moment from 'moment';
 import CardReview from '../CardReview';
 import { useStateValue } from '../../StateProvider';
+import _ from 'lodash';
 
 function Modal({ display, callback, btnModal, taskEditing }) {
-	const [{ tasks }, dispatch] = useStateValue();
+	const [{ tasks, columns, columnOrder }, dispatch] = useStateValue();
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
 	const [tag, setTag] = useState('');
@@ -105,6 +106,25 @@ function Modal({ display, callback, btnModal, taskEditing }) {
 				id: taskEditing.id,
 			},
 		});
+
+		const tmpData = {
+			tasks,
+			columns,
+			columnOrder,
+		};
+
+		_.map(tmpData.columnOrder, (columnId) => {
+			const column = tmpData.columns[columnId].tasksId;
+
+			if (_.includes(column, taskEditing.id)) {
+				const indexElement = _.indexOf(column, taskEditing.id);
+				column.splice(indexElement, 1);
+			}
+		});
+		delete tmpData.tasks[taskEditing.id];
+
+		localStorage.setItem('listTasks', JSON.stringify(tmpData));
+
 		callback('close');
 		setTitle('');
 		setDescription('');

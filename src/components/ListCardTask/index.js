@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import _ from 'lodash';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { useStateValue } from '../../StateProvider';

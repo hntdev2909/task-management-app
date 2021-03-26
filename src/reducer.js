@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 import { Images } from './themes';
 import _ from 'lodash';
 
@@ -128,6 +130,7 @@ const reducer = (state, action) => {
 					column.splice(indexElement, 1);
 				}
 			});
+			delete tmpData.tasks[action.payload.id];
 
 			return {
 				...tmpData,
