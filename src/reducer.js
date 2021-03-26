@@ -1,4 +1,5 @@
 import { Images } from './themes';
+import _ from 'lodash';
 
 export const initialState = {
 	tasks: {
@@ -72,7 +73,6 @@ const reducer = (state, action) => {
 	switch (action.type) {
 		case 'CHANGE_ROW_IN_COL':
 			const tmpState = { ...state };
-
 			return {
 				...tmpState,
 				columns: {
@@ -100,11 +100,12 @@ const reducer = (state, action) => {
 				},
 			};
 		case 'ADD_NEW_TASK':
+			const defaultCol = 'column-1';
 			return {
 				...state,
 				columns: {
 					...state.columns,
-					['column-1']: {
+					[defaultCol]: {
 						...state.columns['column-1'],
 						tasksId: [
 							...state.columns['column-1'].tasksId,
@@ -118,7 +119,19 @@ const reducer = (state, action) => {
 				},
 			};
 		case 'DELETE_TASK':
-			return;
+			const tmpData = { ...state };
+			_.map(tmpData.columnOrder, (columnId) => {
+				const column = tmpData.columns[columnId].tasksId;
+
+				if (_.includes(column, action.payload.id)) {
+					const indexElement = _.indexOf(column, action.payload.id);
+					column.splice(indexElement, 1);
+				}
+			});
+
+			return {
+				...tmpData,
+			};
 		default:
 			return;
 	}

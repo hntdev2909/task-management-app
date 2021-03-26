@@ -52,6 +52,7 @@ const ListCardTaskItem = styled.div`
 	padding: 16px 20px;
 	background-color: #f8f9fa;
 	border-radius: 10px;
+	min-width: 325 px;
 `;
 
 const ListCardTaskContainer = styled.div`

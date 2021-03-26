@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import _ from 'lodash';
+import React, { useState } from 'react';
 import { HomepageContainer } from './Homepage.styles';
 import { Header, FunctionBar, ListCardTask, Modal } from '../../components';
 import { useStateValue } from '../../StateProvider';

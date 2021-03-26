@@ -5,19 +5,22 @@ import {
 	CardReviewContainer,
 	CardReviewModule,
 	CardReviewTime,
-	CardReviewListImageMember,
+	// CardReviewListImageMember,
 	CardReviewFlag,
 	CardReviewAttach,
 	CardReviewFooter,
-	CardReviewImage,
+	// CardReviewImage,
 	CardReviewIcon,
 	CardReviewContent,
 	CardReviewTag,
 	CardReviewTitle,
 	CardReviewParagraph,
-	CardReviewImageContent,
+	// CardReviewImageContent,
 } from './CardReview.styles';
-import { Icons, Images } from '../../themes';
+import {
+	Icons,
+	// Images
+} from '../../themes';
 import moment from 'moment';
 
 function CardReview({ title, description, tag, color }) {

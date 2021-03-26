@@ -5,9 +5,7 @@ import {
 	ModalContent,
 	ModalButton,
 	ModalIcon,
-	ModalTag,
 	ModalText,
-	ModalOption,
 	ModalRadio,
 	ModalBox,
 	ModalHeaderModule,
@@ -22,9 +20,9 @@ import {
 } from './Modal.styles';
 import { Icons } from '../../themes';
 import moment from 'moment';
-import _ from 'lodash';
 import CardReview from '../CardReview';
 import { useStateValue } from '../../StateProvider';
+import _ from 'lodash';
 
 function Modal({ display, callback, btnModal, taskEditing }) {
 	const [{ tasks }, dispatch] = useStateValue();
@@ -98,6 +96,20 @@ function Modal({ display, callback, btnModal, taskEditing }) {
 		taskKey = '';
 	};
 
+	const handleDeleteTask = () => {
+		dispatch({
+			type: 'DELETE_TASK',
+			payload: {
+				id: taskEditing.id,
+			},
+		});
+		callback('close');
+		setTitle('');
+		setDescription('');
+		setTag('');
+		setColor('');
+	};
+
 	const handleSelectRadio = (value) => {
 		setColor(value);
 	};
@@ -124,7 +136,7 @@ function Modal({ display, callback, btnModal, taskEditing }) {
 							/>
 							Give Feedback
 						</ModalButton>
-						<ModalButton>
+						<ModalButton onClick={handleDeleteTask}>
 							<ModalIcon
 								width="20px"
 								height="20px"

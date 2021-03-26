@@ -92,6 +92,7 @@ const CardTaskFooter = styled.div`
 const CardTaskContainer = styled.div`
 	margin-top: 20px;
 	width: 100%;
+	min-width: 270px;
 	background-color: white;
 	border-radius: 7px;
 	box-shadow: 2px 2px 3px 0px rgb(0 0 0 / 20%), 0 25px 50px 0 rgb(0 0 0 / 10%);

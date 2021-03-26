@@ -1,8 +1,7 @@
 # Task
 
-- Form add new, edit and watch
+- Watch full screen
 - Delete task
-- CSS: min-width list task, 3 buttons of function module
 
 # Getting Started with Create React App
 
