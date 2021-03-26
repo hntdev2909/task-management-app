@@ -11,7 +11,11 @@ const ListCardCount = styled.span`
 	margin-left: 10px;
 `;
 
-const ListCard = styled.div``;
+const ListCard = styled.div`
+	border-radius: 10px;
+	transition: background-color 0.2s linear;
+	background-color: ${(props) => (props.isDraggingOver ? '#ddd' : '#eee')};
+`;
 
 const ListCardIcon = styled.img``;
 

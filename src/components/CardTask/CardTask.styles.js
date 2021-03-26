@@ -93,7 +93,9 @@ const CardTaskContainer = styled.div`
 	margin-top: 20px;
 	width: 100%;
 	min-width: 270px;
-	background-color: white;
+	transition: background-color linear 0.2s;
+	background-color: ${(props) =>
+		props.isDragging ? 'rgba(255,255,255,0.7)' : 'white'};
 	border-radius: 7px;
 	box-shadow: 2px 2px 3px 0px rgb(0 0 0 / 20%), 0 25px 50px 0 rgb(0 0 0 / 10%);
 `;

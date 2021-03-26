@@ -118,10 +118,11 @@ function ListCardTask({ callback }) {
 									</ListCardModule>
 								</ListCardHeader>
 								<Droppable droppableId={column.id}>
-									{(provided) => (
+									{(provided, snapshot) => (
 										<ListCard
 											ref={provided.innerRef}
 											{...provided.droppableProps}
+											isDraggingOver={snapshot.isDraggingOver}
 										>
 											{_.map(todos, (task, index) => (
 												<CardTask

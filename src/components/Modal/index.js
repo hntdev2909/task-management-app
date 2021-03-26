@@ -24,7 +24,6 @@ import { Icons } from '../../themes';
 import moment from 'moment';
 import CardReview from '../CardReview';
 import { useStateValue } from '../../StateProvider';
-import _ from 'lodash';
 
 function Modal({ display, callback, btnModal, taskEditing }) {
 	const [{ tasks }, dispatch] = useStateValue();

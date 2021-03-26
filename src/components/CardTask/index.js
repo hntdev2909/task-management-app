@@ -28,12 +28,13 @@ function CardTask({ task, index, callback }) {
 
 	return (
 		<Draggable draggableId={task.id} index={index}>
-			{(provided) => (
+			{(provided, snapshot) => (
 				<CardTaskContainer
 					ref={provided.innerRef}
 					{...provided.draggableProps}
 					{...provided.dragHandleProps}
 					onClick={() => handleClickTask(task.id)}
+					isDragging={snapshot.isDragging}
 				>
 					<CardTaskContent>
 						<CardTaskTitle>{task.title}</CardTaskTitle>
