@@ -12,6 +12,7 @@ import {
 	ListCardTitle,
 	ListCardCount,
 	ListCard,
+	ListCardTaskMaxWidth,
 } from './ListCardTask.styles';
 
 import CardTask from '../CardTask';
@@ -85,58 +86,60 @@ function ListCardTask({ callback }) {
 
 	return (
 		<ListCardTaskContainer>
-			<DragDropContext onDragEnd={onDragEnd}>
-				{_.map(columnOrder, (columnId, index) => {
-					const column = columns[columnId];
-					const todos = _.map(column.tasksId, (taskId) => {
-						return tasks[taskId];
-					});
-					return (
-						<ListCardTaskItem key={index}>
-							<ListCardHeader>
-								<ListCardTitle>
-									{column.title}
-									<ListCardCount>{todos.length}</ListCardCount>
-								</ListCardTitle>
-								<ListCardModule>
-									<ListCardButton hoverBgColor="#d0d5d8">
-										<ListCardIcon
-											width="16px"
-											height="16px"
-											src={Icons.blackPlusIcon.default}
-										/>
-									</ListCardButton>
-									<ListCardButton hoverBgColor="#d0d5d8">
-										<ListCardIcon
-											width="16px"
-											height="16px"
-											src={Icons.menuIcon.default}
-										/>
-									</ListCardButton>
-								</ListCardModule>
-							</ListCardHeader>
-							<Droppable droppableId={column.id}>
-								{(provided) => (
-									<ListCard
-										ref={provided.innerRef}
-										{...provided.droppableProps}
-									>
-										{_.map(todos, (task, index) => (
-											<CardTask
-												index={index}
-												key={task.id}
-												task={task}
-												callback={openTaskToEdit}
+			<ListCardTaskMaxWidth>
+				<DragDropContext onDragEnd={onDragEnd}>
+					{_.map(columnOrder, (columnId, index) => {
+						const column = columns[columnId];
+						const todos = _.map(column.tasksId, (taskId) => {
+							return tasks[taskId];
+						});
+						return (
+							<ListCardTaskItem key={index}>
+								<ListCardHeader>
+									<ListCardTitle>
+										{column.title}
+										<ListCardCount>{todos.length}</ListCardCount>
+									</ListCardTitle>
+									<ListCardModule>
+										<ListCardButton hoverBgColor="#d0d5d8">
+											<ListCardIcon
+												width="16px"
+												height="16px"
+												src={Icons.blackPlusIcon.default}
 											/>
-										))}
-										{provided.placeholder}
-									</ListCard>
-								)}
-							</Droppable>
-						</ListCardTaskItem>
-					);
-				})}
-			</DragDropContext>
+										</ListCardButton>
+										<ListCardButton hoverBgColor="#d0d5d8">
+											<ListCardIcon
+												width="16px"
+												height="16px"
+												src={Icons.menuIcon.default}
+											/>
+										</ListCardButton>
+									</ListCardModule>
+								</ListCardHeader>
+								<Droppable droppableId={column.id}>
+									{(provided) => (
+										<ListCard
+											ref={provided.innerRef}
+											{...provided.droppableProps}
+										>
+											{_.map(todos, (task, index) => (
+												<CardTask
+													index={index}
+													key={task.id}
+													task={task}
+													callback={openTaskToEdit}
+												/>
+											))}
+											{provided.placeholder}
+										</ListCard>
+									)}
+								</Droppable>
+							</ListCardTaskItem>
+						);
+					})}
+				</DragDropContext>
+			</ListCardTaskMaxWidth>
 		</ListCardTaskContainer>
 	);
 }

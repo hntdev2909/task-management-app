@@ -40,19 +40,15 @@ const HeaderMemberListImageItem = styled.div`
 	position: absolute;
 
 	&:first-child {
-		left: 82.5px;
+		right: 15px;
 	}
 
 	&:nth-child(2) {
-		left: 57.5px;
-	}
-
-	&:nth-child(3) {
-		left: 32.5px;
+		right: 40px;
 	}
 
 	&:last-child {
-		left: 5px;
+		right: 65px;
 	}
 `;
 
@@ -95,19 +91,28 @@ const HeaderTitle = styled.div`
 	display: flex;
 `;
 
-const HeaderContainer = styled.div`
+const HeaderMaxwidth = styled.div`
+	max-width: 2040px;
+	min-width: 1592px;
+	background-color: #eee;
+	height: 100%;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	padding: 0 48px;
+	margin: 0 auto;
+`;
+
+const HeaderContainer = styled.div`
+	border-bottom: 1px solid #ccc;
 	width: 100%;
 	height: 76px;
 	background-color: #eee;
-	border-bottom: 1px solid #ccc;
-	padding: 0 48px;
 `;
 
 export {
 	HeaderContainer,
+	HeaderMaxwidth,
 	HeaderTitle,
 	HeaderTitleText,
 	HeaderTag,

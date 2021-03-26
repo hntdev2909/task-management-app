@@ -52,16 +52,21 @@ const ListCardTaskItem = styled.div`
 	padding: 16px 20px;
 	background-color: #f8f9fa;
 	border-radius: 10px;
-	min-width: 325 px;
+	min-width: 325px;
+`;
+
+const ListCardTaskMaxWidth = styled.div`
+	max-width: 2040px;
+	display: grid;
+	grid-column-gap: 50px;
+	grid-template-columns: 1fr 1fr 1fr 1fr;
+	padding: 20px 50px;
+	margin: 0 auto;
 `;
 
 const ListCardTaskContainer = styled.div`
 	width: 100%;
 	// height: 100%;
-	display: grid;
-	grid-column-gap: 50px;
-	grid-template-columns: 1fr 1fr 1fr 1fr;
-	padding: 20px 50px;
 `;
 
 const ListCardDiv = styled.div``;
@@ -77,4 +82,5 @@ export {
 	ListCardIcon,
 	ListCardTitle,
 	ListCard,
+	ListCardTaskMaxWidth,
 };

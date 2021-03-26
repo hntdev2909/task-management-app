@@ -1,7 +1,11 @@
 # Task
 
-- Watch full screen
-- Delete task
+- Max width container,
+- Max width column,
+- Button
+- Attach
+- Flag
+- Tag member
 
 # Getting Started with Create React App
 

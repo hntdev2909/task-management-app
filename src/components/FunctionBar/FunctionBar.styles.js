@@ -28,8 +28,8 @@ const FunctionBarButton = styled.a`
 
 const FunctionBarModule = styled.div`
 	margin-left: auto;
-	grid-column-start: 4;
-	grid-column-end: 4;
+	grid-column-start: 3;
+	grid-column-end: 3;
 `;
 
 const FunctionBarInput = styled.input`
@@ -43,7 +43,7 @@ const FunctionBarInput = styled.input`
 
 const FunctionBarSearch = styled.div`
 	grid-column-start: 1;
-	grid-column-end: 2;
+	grid-column-end: 1;
 	width: 100%;
 	height: 46px;
 	border: 1px solid #e5e8eb;
@@ -54,16 +54,23 @@ const FunctionBarSearch = styled.div`
 	background-color: #f8f9fa;
 `;
 
-const FunctionBarContainer = styled.div`
-	width: 100%;
+const FunctionBarMaxWidth = styled.div`
+	max-width: 2040px;
+	min-width: 1592px;
 	display: grid;
 	grid-column-gap: 50px;
-	grid-template-columns: 1fr 1fr 1fr 1fr;
+	grid-template-columns: 1fr 1fr 2fr;
 	padding: 20px 50px;
+	margin: 0 auto;
+`;
+
+const FunctionBarContainer = styled.div`
+	width: 100%;
 `;
 
 export {
 	FunctionBarContainer,
+	FunctionBarMaxWidth,
 	FunctionBarSearch,
 	FunctionBarInput,
 	FunctionBarModule,

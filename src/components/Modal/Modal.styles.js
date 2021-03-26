@@ -14,6 +14,41 @@ const ModalOption = styled.label``;
 
 const ModalTag = styled.p``;
 
+const ModalEditableTextArea = styled.textarea`
+	font-size: 1.1rem;
+	outline: none;
+	flex: 1;
+	font-family: inherit;
+	padding: 6px;
+	border: none;
+
+	&:hover {
+		background-color: #eee;
+	}
+
+	&:focus {
+		outline: 1.5px solid #ccc;
+		background-color: #eee;
+	}
+`;
+
+const ModalEditable = styled.input`
+	font-size: 1.1rem;
+	width: 100%;
+	position: relative;
+	padding: 6px;
+	border: none;
+
+	&:hover {
+		background-color: #eee;
+	}
+
+	&:focus {
+		outline: 1.5px solid #ccc;
+		background-color: #eee;
+	}
+`;
+
 const ModalText = styled.p`
 	font-size: ${(props) => props.fontSize};
 `;
@@ -44,10 +79,6 @@ const ModalButton = styled.a`
 		filter: invert(0.33) sepia(1) saturate(20) hue-rotate(190.8deg)
 			brightness(0.8);
 	}
-
-	&:nth-child(1) ${ModalIcon} {
-		margin-right: 8px;
-	}
 `;
 
 const ModalSubmit = styled.a`
@@ -59,6 +90,11 @@ const ModalSubmit = styled.a`
 	border-radius: 5px;
 	color: white;
 	margin: 0 auto;
+	margin-top: 50px;
+	&:hover {
+		cursor: pointer;
+		filter: brightness(120%);
+	}
 `;
 
 const ModalTextArea = styled.textarea`
@@ -66,15 +102,16 @@ const ModalTextArea = styled.textarea`
 	outline: none;
 	flex: 1;
 	font-family: inherit;
+	padding: 4px 2px;
 `;
 const ModalInput = styled.input`
 	font-size: 1.05rem;
 	outline: none;
-
+	padding: 4px 2px;
 	flex: 1;
 `;
 const ModalLabel = styled.label`
-	font-size: 1.15rem;
+	font-size: 1.05rem;
 	min-width: 110px;
 `;
 const ModalFormControl = styled.div`
@@ -85,10 +122,13 @@ const ModalFormControl = styled.div`
 		margin-bottom: 45px;
 	}
 `;
-const ModalForm = styled.form``;
+const ModalForm = styled.form`
+	padding-top: 24px;
+`;
 
 const ModalContentDescription = styled.div`
 	width: 400px;
+	padding-top: 24px;
 `;
 
 const ModalContentPost = styled.div`
@@ -132,6 +172,7 @@ const ModalContainer = styled.div`
 
 export {
 	ModalContainer,
+	ModalEditable,
 	ModalHeaderModule,
 	ModalBox,
 	ModalHeader,
@@ -150,4 +191,5 @@ export {
 	ModalFormControl,
 	ModalTextArea,
 	ModalSubmit,
+	ModalEditableTextArea,
 };

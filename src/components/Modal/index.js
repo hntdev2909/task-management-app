@@ -17,6 +17,8 @@ import {
 	ModalFormControl,
 	ModalTextArea,
 	ModalSubmit,
+	ModalEditable,
+	ModalEditableTextArea,
 } from './Modal.styles';
 import { Icons } from '../../themes';
 import moment from 'moment';
@@ -39,6 +41,7 @@ function Modal({ display, callback, btnModal, taskEditing }) {
 	};
 
 	const handleSaveTask = () => {
+		console.log(title);
 		const tmpColor = color?.split('+');
 		const bgColor = tmpColor[0];
 		const textColor = tmpColor[1];
@@ -128,14 +131,6 @@ function Modal({ display, callback, btnModal, taskEditing }) {
 				<ModalHeader>
 					<ModalText fontSize="1.2rem">Add New Task</ModalText>
 					<ModalHeaderModule>
-						<ModalButton fontSize="1rem">
-							<ModalIcon
-								width="20px"
-								height="20px"
-								src={Icons.speakerIcon.default}
-							/>
-							Give Feedback
-						</ModalButton>
 						<ModalButton onClick={handleDeleteTask}>
 							<ModalIcon
 								width="20px"
@@ -164,20 +159,36 @@ function Modal({ display, callback, btnModal, taskEditing }) {
 						<ModalForm>
 							<ModalFormControl>
 								<ModalLabel>Title:</ModalLabel>
-								<ModalInput
-									value={title}
-									onChange={(e) => setTitle(e.target.value)}
-									placeholder="Type title"
-								/>
+								{taskEditing ? (
+									<ModalEditable
+										fontSize="1.4rem"
+										onChange={(e) => setTitle(e.target.value)}
+										value={title}
+									/>
+								) : (
+									<ModalInput
+										fontSize="1.5rem"
+										value={title}
+										onChange={(e) => setTitle(e.target.value)}
+										placeholder="Type title"
+									/>
+								)}
 							</ModalFormControl>
 							<ModalFormControl>
 								<ModalLabel>Description:</ModalLabel>
-								<ModalTextArea
-									value={description}
-									onChange={(e) => setDescription(e.target.value)}
-									rows="4"
-									placeholder="Type desciption"
-								/>
+								{taskEditing ? (
+									<ModalEditableTextArea
+										value={description}
+										onChange={(e) => setDescription(e.target.value)}
+									/>
+								) : (
+									<ModalTextArea
+										value={description}
+										onChange={(e) => setDescription(e.target.value)}
+										rows="4"
+										placeholder="Type desciption"
+									/>
+								)}
 							</ModalFormControl>
 							{/* <ModalFormControl>
 								<ModalLabel>Image:</ModalLabel>
@@ -191,11 +202,18 @@ function Modal({ display, callback, btnModal, taskEditing }) {
 							</ModalFormControl> */}
 							<ModalFormControl>
 								<ModalLabel>Tag:</ModalLabel>
-								<ModalInput
-									value={tag}
-									onChange={(e) => setTag(e.target.value)}
-									placeholder="Type tag"
-								/>
+								{taskEditing ? (
+									<ModalEditable
+										onChange={(e) => setTag(e.target.value)}
+										value={tag}
+									/>
+								) : (
+									<ModalInput
+										value={tag}
+										onChange={(e) => setTag(e.target.value)}
+										placeholder="Type tag"
+									/>
+								)}
 							</ModalFormControl>
 							<ModalFormControl>
 								<ModalLabel>Tag color:</ModalLabel>
@@ -206,6 +224,7 @@ function Modal({ display, callback, btnModal, taskEditing }) {
 										type="radio"
 										name="color"
 										defaultChecked
+										textDecoration="none"
 									/>{' '}
 									Color 1
 								</ModalLabel>
@@ -215,6 +234,7 @@ function Modal({ display, callback, btnModal, taskEditing }) {
 										onClick={(e) => handleSelectRadio(e.target.value)}
 										type="radio"
 										name="color"
+										textDecoration="none"
 									/>{' '}
 									Color 2
 								</ModalLabel>
@@ -224,6 +244,7 @@ function Modal({ display, callback, btnModal, taskEditing }) {
 										onClick={(e) => handleSelectRadio(e.target.value)}
 										type="radio"
 										name="color"
+										textDecoration="none"
 									/>{' '}
 									Color 3
 								</ModalLabel>
