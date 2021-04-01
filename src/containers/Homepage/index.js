@@ -1,44 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { HomepageContainer, HomepageMaxWidth } from './Homepage.styles';
 import { Header, FunctionBar, ListCardTask, Modal } from '../../components';
-import { useStateValue } from '../../StateProvider';
+import { loadLocalTask, loadLocalCol } from '../../redux';
+import { useDispatch } from 'react-redux';
 
 function Homepage() {
-	const [isOpenModal, setIsOpenModal] = useState(false);
-	const [btnModal, setBtnModal] = useState('');
+	const dispatch = useDispatch();
 
-	const [{ tasks, columns, columnOrder }, dispatch] = useStateValue();
-	const [taskEditing, setTaskEditing] = useState({});
-
-	const handleIsOpenModal = (textBtn, id) => {
-		setIsOpenModal(!isOpenModal);
-		if (textBtn !== 'close') {
-			setBtnModal(textBtn);
-			setTaskEditing(tasks[id]);
-		}
-	};
-
-	useEffect(() => {
-		const setDataLocal = {
-			tasks,
-			columns,
-			columnOrder,
-		};
-		localStorage.setItem('listTasks', JSON.stringify(setDataLocal));
-	}, [tasks, columns]);
+	// useEffect(() => {
+	// 	const localData = localStorage.getItem('todoser');
+	// 	if (localData) {
+	// 		dispatch(loadLocalTask(JSON.parse(localData.task)));
+	// 		dispatch(loadLocalCol(JSON.parse(localData.columns)));
+	// 	}
+	// }, []);
 
 	return (
 		<HomepageContainer>
 			<HomepageMaxWidth>
-				<Modal
-					taskEditing={taskEditing ? taskEditing : ''}
-					btnModal={btnModal}
-					display={isOpenModal ? 'flex' : 'none'}
-					callback={handleIsOpenModal}
-				/>
+				<Modal />
 				<Header />
-				<FunctionBar isOpenModal={isOpenModal} callback={handleIsOpenModal} />
-				<ListCardTask callback={handleIsOpenModal} />
+				<FunctionBar />
+				<ListCardTask />
 			</HomepageMaxWidth>
 		</HomepageContainer>
 	);

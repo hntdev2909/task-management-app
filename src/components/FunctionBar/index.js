@@ -9,10 +9,14 @@ import {
 	FunctionBarMaxWidth,
 } from './FunctionBar.styles';
 import { Icons } from '../../themes';
+import { useDispatch } from 'react-redux';
+import { openModal, setTmpTask } from '../../redux';
 
-function FunctionBar({ callback }) {
-	const handleOpenModal = () => {
-		callback('Thêm');
+function FunctionBar() {
+	const dispatch = useDispatch();
+
+	const handleNewItem = () => {
+		dispatch(openModal());
 	};
 
 	return (
@@ -31,7 +35,7 @@ function FunctionBar({ callback }) {
 						bgColor="#004cff"
 						color="white"
 						hoverBgColor="#0b54ff"
-						onClick={handleOpenModal}
+						onClick={() => handleNewItem()}
 					>
 						<FunctionBarIcon
 							width="14px"

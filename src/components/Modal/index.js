@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
 	ModalContainer,
 	ModalHeader,
@@ -23,140 +23,138 @@ import {
 import { Icons } from '../../themes';
 import moment from 'moment';
 import CardReview from '../CardReview';
-import { useStateValue } from '../../StateProvider';
 import _ from 'lodash';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+	addTask,
+	openModal,
+	addTaskCol,
+	editing,
+	setTmpTask,
+	deleteTask,
+	editTask,
+	deleteTaskInCol,
+} from '../../redux';
 
-function Modal({ display, callback, btnModal, taskEditing }) {
-	const [{ tasks, columns, columnOrder }, dispatch] = useStateValue();
-	const [title, setTitle] = useState('');
-	const [description, setDescription] = useState('');
-	const [tag, setTag] = useState('');
-	const [color, setColor] = useState('#f6fdf7+#3db452');
+function uuidv4() {
+	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+		var r = (Math.random() * 16) | 0,
+			v = c === 'x' ? r : (r & 0x3) | 0x8;
+		return v.toString(16);
+	});
+}
 
-	const handleCloseModal = () => {
-		callback('close');
-		setTitle('');
-		setDescription('');
-		setTag('');
-	};
+function Modal() {
+	const { tmpTask } = useSelector((state) => state.task);
+	const { isOpenModal, isEditing } = useSelector((state) => state.modal);
+	const dispatch = useDispatch();
+
+	const [tmpTitle, setTmpTitle] = useState('');
+	const [tmpDescription, setTmpDescription] = useState('');
+	const [tmpTag, setTmpTag] = useState('');
+	const [tmpColor, setTmpColor] = useState('#f6fdf7+#3db452');
 
 	const handleSaveTask = () => {
-		console.log(title);
-		const tmpColor = color?.split('+');
-		const bgColor = tmpColor[0];
-		const textColor = tmpColor[1];
-		let taskKey;
-
-		if (taskEditing) {
-			if (btnModal === 'Lưu') {
-				taskKey = taskEditing.id;
-
-				dispatch({
-					type: 'EDIT_TASK',
-					payload: {
-						taskId: taskKey,
-						newData: {
-							id: taskKey,
-							title: title,
-							tag: {
-								name: tag,
-								bgColor: bgColor,
-								color: textColor,
-							},
-							content: description,
-							createdAt: moment().format('MMM Do'),
-						},
-					},
-				});
-			}
-		}
-
-		if (btnModal === 'Thêm') {
-			taskKey = `task-${Object.keys(tasks).length + 1}`;
-			dispatch({
-				type: 'ADD_NEW_TASK',
-				payload: {
-					taskId: taskKey,
+		const id = uuidv4();
+		const tmpArrColor = tmpColor?.split('+');
+		const bgColor = tmpArrColor[0];
+		const textColor = tmpArrColor[1];
+		if (!isEditing) {
+			dispatch(
+				addTask({
+					taskId: id,
 					newData: {
-						id: taskKey,
-						title: title,
+						id: id,
+						title: tmpTitle,
 						tag: {
-							name: tag,
+							name: tmpTag,
 							bgColor: bgColor,
 							color: textColor,
 						},
-						content: description,
+						content: tmpDescription,
 						createdAt: moment().format('MMM Do'),
 					},
-				},
-			});
+				})
+			);
+			dispatch(addTaskCol(id));
+		} else {
+			dispatch(
+				editTask({
+					taskId: tmpTask.id,
+					newData: {
+						id: tmpTask.id,
+						title: tmpTitle,
+						tag: {
+							name: tmpTag,
+							bgColor: bgColor,
+							color: textColor,
+						},
+						content: tmpDescription,
+						createdAt: moment().format('MMM Do'),
+					},
+				})
+			);
 		}
-		callback('close');
-		setTitle('');
-		setDescription('');
-		setTag('');
-		setColor('');
-		taskKey = '';
+		dispatch(openModal());
+		setTmpTitle('');
+		setTmpDescription('');
+		setTmpTag('');
+		setTmpColor('');
 	};
 
-	const handleDeleteTask = () => {
-		dispatch({
-			type: 'DELETE_TASK',
-			payload: {
-				id: taskEditing.id,
-			},
-		});
-
-		const tmpData = {
-			tasks,
-			columns,
-			columnOrder,
-		};
-
-		_.map(tmpData.columnOrder, (columnId) => {
-			const column = tmpData.columns[columnId].tasksId;
-
-			if (_.includes(column, taskEditing.id)) {
-				const indexElement = _.indexOf(column, taskEditing.id);
-				column.splice(indexElement, 1);
-			}
-		});
-		delete tmpData.tasks[taskEditing.id];
-
-		localStorage.setItem('listTasks', JSON.stringify(tmpData));
-
-		callback('close');
-		setTitle('');
-		setDescription('');
-		setTag('');
-		setColor('');
+	const handleClose = () => {
+		dispatch(openModal());
+		if (isEditing) {
+			dispatch(editing());
+		}
 	};
 
 	const handleSelectRadio = (value) => {
-		setColor(value);
+		setTmpColor(value);
+	};
+
+	const handleDeleteTask = () => {
+		dispatch(deleteTaskInCol(tmpTask.id));
+		dispatch(deleteTask(tmpTask.id));
+		dispatch(editing());
+		dispatch(openModal());
+		setTmpTitle('');
+		setTmpDescription('');
+		setTmpTag('');
+		setTmpColor('');
 	};
 
 	useEffect(() => {
-		if (taskEditing) {
-			setTitle(taskEditing?.title);
-			setDescription(taskEditing?.content);
-			setTag(taskEditing?.tag?.name);
+		if (!_.isEmpty(tmpTask) && isEditing) {
+			setTmpTitle(tmpTask.title);
+			setTmpDescription(tmpTask.content);
+			setTmpTag(tmpTask.tag.name);
+			setTmpColor(`${tmpTask.tag.bgColor}+${tmpTask.tag.color}`);
+		} else {
+			setTmpTitle('');
+			setTmpDescription('');
+			setTmpTag('');
+			setTmpColor('');
 		}
-	}, [taskEditing]);
+	}, [isEditing]);
 
 	return (
-		<ModalContainer display={display}>
+		<ModalContainer display={isOpenModal ? 'flex' : 'none'}>
 			<ModalBox>
 				<ModalHeader>
 					<ModalText fontSize="1.2rem">Add New Task</ModalText>
 					<ModalHeaderModule>
-						<ModalButton onClick={handleDeleteTask}>
-							<ModalIcon
-								width="20px"
-								height="20px"
-								src={Icons.deleteIcon.default}
-							/>
-						</ModalButton>
+						{isEditing ? (
+							<ModalButton onClick={handleDeleteTask}>
+								<ModalIcon
+									width="20px"
+									height="20px"
+									src={Icons.deleteIcon.default}
+								/>
+							</ModalButton>
+						) : (
+							''
+						)}
 						<ModalButton>
 							<ModalIcon
 								width="20px"
@@ -164,7 +162,7 @@ function Modal({ display, callback, btnModal, taskEditing }) {
 								src={Icons.fullScreenIcon.default}
 							/>
 						</ModalButton>
-						<ModalButton onClick={handleCloseModal}>
+						<ModalButton onClick={() => handleClose()}>
 							<ModalIcon
 								width="20px"
 								height="20px"
@@ -178,32 +176,32 @@ function Modal({ display, callback, btnModal, taskEditing }) {
 						<ModalForm>
 							<ModalFormControl>
 								<ModalLabel>Title:</ModalLabel>
-								{taskEditing ? (
+								{isEditing ? (
 									<ModalEditable
 										fontSize="1.4rem"
-										onChange={(e) => setTitle(e.target.value)}
-										value={title}
+										onChange={(e) => setTmpTitle(e.target.value)}
+										value={tmpTitle}
 									/>
 								) : (
 									<ModalInput
 										fontSize="1.5rem"
-										value={title}
-										onChange={(e) => setTitle(e.target.value)}
+										value={tmpTitle}
+										onChange={(e) => setTmpTitle(e.target.value)}
 										placeholder="Type title"
 									/>
 								)}
 							</ModalFormControl>
 							<ModalFormControl>
 								<ModalLabel>Description:</ModalLabel>
-								{taskEditing ? (
+								{isEditing ? (
 									<ModalEditableTextArea
-										value={description}
-										onChange={(e) => setDescription(e.target.value)}
+										value={tmpDescription}
+										onChange={(e) => setTmpDescription(e.target.value)}
 									/>
 								) : (
 									<ModalTextArea
-										value={description}
-										onChange={(e) => setDescription(e.target.value)}
+										value={tmpDescription}
+										onChange={(e) => setTmpDescription(e.target.value)}
 										rows="4"
 										placeholder="Type desciption"
 									/>
@@ -221,15 +219,15 @@ function Modal({ display, callback, btnModal, taskEditing }) {
 							</ModalFormControl> */}
 							<ModalFormControl>
 								<ModalLabel>Tag:</ModalLabel>
-								{taskEditing ? (
+								{isEditing ? (
 									<ModalEditable
-										onChange={(e) => setTag(e.target.value)}
-										value={tag}
+										onChange={(e) => setTmpTag(e.target.value)}
+										value={tmpTag}
 									/>
 								) : (
 									<ModalInput
-										value={tag}
-										onChange={(e) => setTag(e.target.value)}
+										value={tmpTag}
+										onChange={(e) => setTmpTag(e.target.value)}
 										placeholder="Type tag"
 									/>
 								)}
@@ -268,15 +266,17 @@ function Modal({ display, callback, btnModal, taskEditing }) {
 									Color 3
 								</ModalLabel>
 							</ModalFormControl>
-							<ModalSubmit onClick={handleSaveTask}>{btnModal}</ModalSubmit>
+							<ModalSubmit onClick={handleSaveTask}>
+								{isEditing ? 'Lưu' : 'Thêm'}
+							</ModalSubmit>
 						</ModalForm>
 					</ModalContentPost>
 					<ModalContentDescription>
 						<CardReview
-							title={title}
-							description={description}
-							tag={tag}
-							color={color}
+							title={tmpTitle}
+							description={tmpDescription}
+							tag={tmpTag}
+							color={tmpColor}
 						/>
 					</ModalContentDescription>
 				</ModalContent>

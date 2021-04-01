@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import _ from 'lodash';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
-import { useStateValue } from '../../StateProvider';
 import {
 	ListCardTaskContainer,
 	ListCardTaskItem,
@@ -14,17 +13,15 @@ import {
 	ListCard,
 	ListCardTaskMaxWidth,
 } from './ListCardTask.styles';
-
 import CardTask from '../CardTask';
-
 import { Icons } from '../../themes';
+import { useDispatch, useSelector } from 'react-redux';
+import { changeInCol, changeBetweenCol } from '../../redux';
 
-function ListCardTask({ callback }) {
-	const [{ tasks, columns, columnOrder }, dispatch] = useStateValue();
-
-	const openTaskToEdit = (id) => {
-		callback('Lưu', id);
-	};
+function ListCardTask() {
+	const dispatch = useDispatch();
+	const { columns, columnOrder } = useSelector((state) => state.listTask);
+	const tasks = useSelector((state) => state.task);
 
 	const onDragEnd = (result) => {
 		const { destination, source, draggableId } = result;
@@ -49,13 +46,12 @@ function ListCardTask({ callback }) {
 			newTaskIds.splice(source.index, 1);
 			newTaskIds.splice(destination.index, 0, draggableId);
 
-			dispatch({
-				type: 'CHANGE_ROW_IN_COL',
-				payload: {
+			dispatch(
+				changeInCol({
 					col,
 					newTaskIds,
-				},
-			});
+				})
+			);
 		} else {
 			const startTasksId = Array.from(start.tasksId);
 			startTasksId.splice(source.index, 1);
@@ -71,16 +67,15 @@ function ListCardTask({ callback }) {
 				tasksId: finishTasksId,
 			};
 
-			dispatch({
-				type: 'CHANGE_ROW_WITH_ROW',
-				payload: {
+			dispatch(
+				changeBetweenCol({
 					columns: {
 						...columns,
 						[newStart.id]: newStart,
 						[newFinish.id]: newFinish,
 					},
-				},
-			});
+				})
+			);
 		}
 	};
 
@@ -125,12 +120,7 @@ function ListCardTask({ callback }) {
 											isDraggingOver={snapshot.isDraggingOver}
 										>
 											{_.map(todos, (task, index) => (
-												<CardTask
-													index={index}
-													key={task.id}
-													task={task}
-													callback={openTaskToEdit}
-												/>
+												<CardTask index={index} key={task.taskId} task={task} />
 											))}
 											{provided.placeholder}
 										</ListCard>
