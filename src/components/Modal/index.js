@@ -35,6 +35,7 @@ import {
 	editTask,
 	deleteTaskInCol,
 } from '../../redux';
+import { API } from '../../api/callAPI';
 
 function uuidv4() {
 	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -55,34 +56,34 @@ function Modal() {
 	const [tmpColor, setTmpColor] = useState('#f6fdf7+#3db452');
 
 	const handleSaveTask = () => {
-		const id = uuidv4();
 		const tmpArrColor = tmpColor?.split('+');
 		const bgColor = tmpArrColor[0];
 		const textColor = tmpArrColor[1];
 		if (!isEditing) {
-			dispatch(
-				addTask({
-					taskId: id,
-					newData: {
-						id: id,
-						title: tmpTitle,
-						tag: {
-							name: tmpTag,
-							bgColor: bgColor,
-							color: textColor,
-						},
-						content: tmpDescription,
-						createdAt: moment().format('MMM Do'),
+			API.createTask({
+				newData: {
+					title: tmpTitle,
+					tag: {
+						name: tmpTag,
+						bgColor: bgColor,
+						color: textColor,
 					},
+					content: tmpDescription,
+					createdAt: moment().format('MMM Do'),
+				},
+			})
+				.then((res) => {
+					dispatch(addTask(res.data));
+					dispatch(addTaskCol(res.data._id));
 				})
-			);
-			dispatch(addTaskCol(id));
+				.catch((err) => console.log(err));
 		} else {
 			dispatch(
 				editTask({
-					taskId: tmpTask.id,
+					_id: tmpTask._id,
+					taskId: tmpTask._id,
 					newData: {
-						id: tmpTask.id,
+						id: tmpTask._id,
 						title: tmpTitle,
 						tag: {
 							name: tmpTag,
@@ -94,6 +95,21 @@ function Modal() {
 					},
 				})
 			);
+			API.editTask({
+				_id: tmpTask._id,
+				taskId: tmpTask._id,
+				newData: {
+					id: tmpTask._id,
+					title: tmpTitle,
+					tag: {
+						name: tmpTag,
+						bgColor: bgColor,
+						color: textColor,
+					},
+					content: tmpDescription,
+					createdAt: moment().format('MMM Do'),
+				},
+			});
 		}
 		dispatch(openModal());
 		setTmpTitle('');
@@ -114,8 +130,11 @@ function Modal() {
 	};
 
 	const handleDeleteTask = () => {
-		dispatch(deleteTaskInCol(tmpTask.id));
-		dispatch(deleteTask(tmpTask.id));
+		dispatch(deleteTaskInCol(tmpTask._id));
+		dispatch(deleteTask(tmpTask._id));
+		API.deleteTask(tmpTask._id)
+			.then((res) => console.log('Delete'))
+			.catch((err) => console.log('ERrr'));
 		dispatch(editing());
 		dispatch(openModal());
 		setTmpTitle('');
@@ -126,10 +145,12 @@ function Modal() {
 
 	useEffect(() => {
 		if (!_.isEmpty(tmpTask) && isEditing) {
-			setTmpTitle(tmpTask.title);
-			setTmpDescription(tmpTask.content);
-			setTmpTag(tmpTask.tag.name);
-			setTmpColor(`${tmpTask.tag.bgColor}+${tmpTask.tag.color}`);
+			setTmpTitle(tmpTask.newData.title);
+			setTmpDescription(tmpTask.newData.content);
+			setTmpTag(tmpTask.newData.tag.name);
+			setTmpColor(
+				`${tmpTask.newData.tag.bgColor}+${tmpTask.newData.tag.color}`
+			);
 		} else {
 			setTmpTitle('');
 			setTmpDescription('');

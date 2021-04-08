@@ -6,79 +6,33 @@ import {
 	LOAD_LOCAL_COL,
 } from './ListTaskTypes';
 
-const initialState = {
-	columns: {
-		'column-1': {
-			id: 'column-1',
-			title: 'To do',
-			tasksId: [],
-		},
-		'column-2': {
-			id: 'column-2',
-			title: 'In progress',
-			tasksId: [],
-		},
-		'column-3': {
-			id: 'column-3',
-			title: 'In review',
-			tasksId: [],
-		},
-		'column-4': {
-			id: 'column-4',
-			title: 'Done',
-			tasksId: [],
-		},
-	},
-	columnOrder: ['column-1', 'column-2', 'column-3', 'column-4'],
-};
+const initialState = {};
 
 const ListTaskReducer = (state = initialState, action) => {
-	// const localData = localStorage.getItem('todoser');
 	switch (action.type) {
-		case LOAD_LOCAL_COL:
+		case LOAD_LOCAL_COL: // DONE
+			let tmpCol = {};
+			for (const column of action.payload.columns) {
+				tmpCol[column.columnName] = column;
+			}
 			return {
 				...state,
-				...action.payload,
+				columns: tmpCol,
+				columnOrder: action.payload.columnOrder,
 			};
 
 		case ADD_TASK_COL:
-			// localStorage.setItem(
-			// 	'todoser',
-			// 	JSON.stringify({
-			// 		tasks: localData.tasks,
-			// 		columns: {
-			// 			...state.columns,
-			// 			'column-1': {
-			// 				...state.columns['column-1'],
-			// 				tasksId: [...state.columns['column-1'].tasksId, action.payload],
-			// 			},
-			// 		},
-			// 	})
-			// );
 			return {
 				...state,
 				columns: {
 					...state.columns,
-					'column-1': {
-						...state.columns['column-1'],
-						tasksId: [...state.columns['column-1'].tasksId, action.payload],
+					columnOne: {
+						...state.columns['columnOne'],
+						tasksId: [...state.columns['columnOne'].tasksId, action.payload],
 					},
 				},
 			};
 		case CHANGE_IN_COL:
-			// localStorage.setItem(
-			// 	'todoser',
-			// 	JSON.stringify({
-			// 		tasks: localData.tasks,
-			// 		columns: {
-			// 			...state.columns,
-			// 			[action.payload.col]: {
-			// 				...state.columns[action.payload.col],
-			// 				tasksId: action.payload.newTaskIds,
-			// 			},
-			// 		},
-			// 	})
-			// );
 			return {
 				...state,
 				columns: {
@@ -91,13 +45,6 @@ const ListTaskReducer = (state = initialState, action) => {
 			};
 
 		case CHANGE_BETWEEN_COL:
-			// localStorage.setItem(
-			// 	'todoser',
-			// 	JSON.stringify({
-			// 		tasks: localData.tasks,
-			// 		columns: action.payload.columns,
-			// 	})
-			// );
 			return {
 				...state,
 				columns: action.payload.columns,
@@ -111,14 +58,6 @@ const ListTaskReducer = (state = initialState, action) => {
 					tmpColumns.columns[col].tasksId.splice(index, 1);
 				}
 			}
-			// localStorage.setItem(
-			// 	'todoser',
-			// 	JSON.stringify({
-			// 		tasks: localData.tasks,
-			// 		columns: tmpColumns.columns,
-			// 		columnOrder: tmpColumns.columnOrder,
-			// 	})
-			// );
 			return {
 				...tmpColumns,
 			};

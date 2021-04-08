@@ -1,6 +1,7 @@
 # Tasks
 
-- localStorage
+- DROP AND DRAG
+- MODAL'S DATA WHEN EDIT AND ADD NEW
 
 # TODOs Management
 

@@ -17,6 +17,7 @@ import CardTask from '../CardTask';
 import { Icons } from '../../themes';
 import { useDispatch, useSelector } from 'react-redux';
 import { changeInCol, changeBetweenCol } from '../../redux';
+import { API } from '../../api/callAPI';
 
 function ListCardTask() {
 	const dispatch = useDispatch();
@@ -37,21 +38,38 @@ function ListCardTask() {
 			return;
 		}
 
-		const start = columns[source.droppableId];
-		const finish = columns[destination.droppableId];
+		let start, finish;
+		let nameStart, nameEnd;
+
+		for (let column in columns) {
+			if (columns[column]._id === source.droppableId) {
+				start = columns[column];
+				nameStart = column;
+			}
+
+			if (columns[column]._id === destination.droppableId) {
+				finish = columns[column];
+				nameEnd = column;
+			}
+		}
 
 		if (start === finish) {
-			const col = source.droppableId;
+			const col = nameStart;
 			const newTaskIds = Array.from(start.tasksId);
 			newTaskIds.splice(source.index, 1);
 			newTaskIds.splice(destination.index, 0, draggableId);
-
 			dispatch(
 				changeInCol({
 					col,
 					newTaskIds,
 				})
 			);
+
+			API.changeCol({
+				result,
+			})
+				.then(() => console.log('Changed'))
+				.catch(() => console.log('Err'));
 		} else {
 			const startTasksId = Array.from(start.tasksId);
 			startTasksId.splice(source.index, 1);
@@ -71,11 +89,17 @@ function ListCardTask() {
 				changeBetweenCol({
 					columns: {
 						...columns,
-						[newStart.id]: newStart,
-						[newFinish.id]: newFinish,
+						[newStart.columnName]: newStart,
+						[newFinish.columnName]: newFinish,
 					},
 				})
 			);
+
+			API.changeCol({
+				result,
+			})
+				.then(() => console.log('Changed'))
+				.catch(() => console.log('Err'));
 		}
 	};
 
@@ -84,15 +108,19 @@ function ListCardTask() {
 			<ListCardTaskMaxWidth>
 				<DragDropContext onDragEnd={onDragEnd}>
 					{_.map(columnOrder, (columnId, index) => {
-						const column = columns[columnId];
-						const todos = _.map(column.tasksId, (taskId) => {
+						let column = _.filter(
+							columns,
+							(column) => column.columnName === columnId
+						);
+						const todos = _.map(column[0].tasksId, (taskId) => {
 							return tasks[taskId];
 						});
+
 						return (
 							<ListCardTaskItem key={index}>
 								<ListCardHeader>
 									<ListCardTitle>
-										{column.title}
+										{column[0].title}
 										<ListCardCount>{todos.length}</ListCardCount>
 									</ListCardTitle>
 									<ListCardModule>
@@ -112,16 +140,22 @@ function ListCardTask() {
 										</ListCardButton>
 									</ListCardModule>
 								</ListCardHeader>
-								<Droppable droppableId={column.id}>
+								<Droppable droppableId={column[0]._id}>
 									{(provided, snapshot) => (
 										<ListCard
 											ref={provided.innerRef}
 											{...provided.droppableProps}
 											isDraggingOver={snapshot.isDraggingOver}
 										>
-											{_.map(todos, (task, index) => (
-												<CardTask index={index} key={task.taskId} task={task} />
-											))}
+											{_.map(todos, (task, index) => {
+												return (
+													<CardTask
+														index={index}
+														key={task.taskId}
+														task={task}
+													/>
+												);
+											})}
 											{provided.placeholder}
 										</ListCard>
 									)}

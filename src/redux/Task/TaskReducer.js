@@ -12,51 +12,40 @@ const initialState = {
 };
 
 const TaskReducer = (state = initialState, action) => {
-	// const localData = localStorage.getItem('todoser');
 	let tmpTaskData = { ...state };
 	switch (action.type) {
-		case LOAD_LOCAL_TASK:
+		case LOAD_LOCAL_TASK: // DONE
+			let tmpTaskLoad = {};
+			for (const task of action.payload) {
+				tmpTaskLoad[task._id] = task;
+			}
 			return {
 				...state,
-				...action.payload,
+				...tmpTaskLoad,
 			};
 
-		case ADD_TASK:
+		case ADD_TASK: // DONE
 			tmpTaskData = {
 				...tmpTaskData,
 				[action.payload.taskId]: action.payload,
 			};
-			// localStorage.setItem(
-			// 	'todoser',
-			// 	JSON.stringify({
-			// 		tasks: tmpTaskData,
-			// 	})
-			// );
 			return { ...tmpTaskData };
 
 		case EDIT_TASK:
+			console.log(action.payload);
 			tmpTaskData = {
 				...tmpTaskData,
 				[action.payload.taskId]: action.payload,
 			};
-			// localStorage.setItem(
-			// 	'todoser',
-			// 	JSON.stringify({
-			// 		tasks: tmpTaskData,
-			// 	})
-			// );
+
 			return {
 				...tmpTaskData,
 			};
 
 		case DELETE_TASK:
+			console.log(action.payload);
 			delete tmpTaskData[action.payload];
-			// localStorage.setItem(
-			// 	'todoser',
-			// 	JSON.stringify({
-			// 		tasks: tmpTaskData,
-			// 	})
-			// );
+
 			return {
 				...tmpTaskData,
 			};
@@ -64,7 +53,7 @@ const TaskReducer = (state = initialState, action) => {
 		case SET_TMP_TASK:
 			return {
 				...state,
-				tmpTask: state[action.payload].newData,
+				tmpTask: state[action.payload],
 			};
 		default:
 			return state;
