@@ -1,12 +1,8 @@
-# Tasks
-
-- DROP AND DRAG
-- MODAL'S DATA WHEN EDIT AND ADD NEW
-
 # TODOs Management
 
 TODOs Management is a web application for creating, editing, and deleting a to-do list.
 Any task can be moved between the 4 columns (Tasks, In progress, In progress, and Completed) to change their status.
+And app using call API with Node.js + Express.
 
 ## Install, package and libraries
 
