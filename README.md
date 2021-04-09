@@ -1,9 +1,3 @@
-# Tasks
-
-- UI:
-
-  - darkmode
-
 # TODOs Management
 
 TODOs Management is a web application for creating, editing, and deleting a to-do list.

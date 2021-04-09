@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { changeInCol, deleteTask } from '../redux';
 // https://server-intern-idra.herokuapp.com
-const baseUrl = 'http://localhost:5000/taskmanage';
+const baseUrl = 'https://server-intern-idra.herokuapp.com/taskmanage';
 
 export const API = {
 	async firstCall() {
