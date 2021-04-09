@@ -10,12 +10,12 @@ const ModalReducer = (state = initialState, action) => {
 		case IS_OPEN_MODAL:
 			return {
 				...state,
-				isOpenModal: !state.isOpenModal,
+				isOpenModal: action.payload,
 			};
 		case IS_EDITING:
 			return {
 				...state,
-				isEditing: !state.isEditing,
+				isEditing: action.payload,
 			};
 		default:
 			return {

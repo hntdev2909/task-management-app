@@ -13,6 +13,7 @@ import {
 	deleteTaskInCol,
 	loadLocalCol,
 } from './ListTask/ListTaskActions';
+import { callingServer, calledServer } from './Loading/LoadingActions';
 
 export {
 	addTask,
@@ -27,4 +28,6 @@ export {
 	setTmpTask,
 	deleteTaskInCol,
 	loadLocalCol,
+	callingServer,
+	calledServer,
 };

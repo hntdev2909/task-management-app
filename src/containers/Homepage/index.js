@@ -3,18 +3,24 @@ import {
 	HomepageContainer,
 	HomepageMaxWidth,
 	HomepageLoading,
-	SpinnerParent,
-	SpinnerChild,
 } from './Homepage.styles';
-import { Header, FunctionBar, ListCardTask, Modal } from '../../components';
+import {
+	Header,
+	FunctionBar,
+	ListCardTask,
+	Modal,
+	Spinner,
+} from '../../components';
 import { loadLocalTask, loadLocalCol } from '../../redux';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { API } from '../../api/callAPI';
 
 function Homepage() {
 	const [isLoading, setIsLoading] = useState(false);
 
 	const dispatch = useDispatch();
+
+	const { isLoadingServer } = useSelector((state) => state.loading);
 
 	useEffect(() => {
 		setIsLoading(true);
@@ -28,9 +34,7 @@ function Homepage() {
 					})
 				);
 				dispatch(loadLocalTask(res.data.tasks));
-				setTimeout(() => {
-					setIsLoading(false);
-				}, 1000);
+				setIsLoading(false);
 			})
 			.catch((err) => console.log(err));
 	}, []);
@@ -39,11 +43,7 @@ function Homepage() {
 		<HomepageContainer>
 			{isLoading ? (
 				<HomepageLoading>
-					<SpinnerParent>
-						<SpinnerChild></SpinnerChild>
-						<SpinnerChild></SpinnerChild>
-						<SpinnerChild></SpinnerChild>
-					</SpinnerParent>
+					<Spinner></Spinner>
 				</HomepageLoading>
 			) : (
 				<HomepageMaxWidth>

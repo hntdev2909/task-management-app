@@ -1,45 +1,13 @@
 import styled, { keyframes } from 'styled-components';
 
-const Animation = keyframes`
-	0% {
-		top: 8px;
-		height: 64px;
-	}
-	50%, 100% {
-		top: 24px;
-		height: 32px;
-	}
-`;
-
-const SpinnerChild = styled.div`
-	display: inline-block;
-	position: absolute;
-	left: 8px;
-	width: 16px;
-	background: #fff;
-	animation: ${Animation} 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
-
-	&:nth-child(1) {
-		left: 8px;
-		animation-delay: -0.24s;
+const fadeIn = keyframes`
+	from {
+		opacity: 0.5;
 	}
 
-	&:nth-child(2) {
-		left: 32px;
-		animation-delay: -0.12s;
+	to {
+		opacity: 1;
 	}
-
-	&:nth-child(3) {
-		left: 56px;
-		animation-delay: 0;
-	}
-`;
-
-const SpinnerParent = styled.div`
-	display: inline-block;
-	position: relative;
-	width: 80px;
-	height: 80px;
 `;
 
 const HomepageLoading = styled.div`
@@ -55,6 +23,7 @@ const HomepageLoading = styled.div`
 const HomepageMaxWidth = styled.div`
 	margin: 0 auto;
 	min-width: 1130px;
+	animation: ${fadeIn} 0.8s linear;
 `;
 
 const HomepageContainer = styled.div`
@@ -62,10 +31,4 @@ const HomepageContainer = styled.div`
 	height: 100%;
 `;
 
-export {
-	HomepageContainer,
-	HomepageMaxWidth,
-	HomepageLoading,
-	SpinnerParent,
-	SpinnerChild,
-};
+export { HomepageContainer, HomepageMaxWidth, HomepageLoading };

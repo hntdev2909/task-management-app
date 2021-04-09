@@ -19,6 +19,7 @@ import {
 	ModalSubmit,
 	ModalEditable,
 	ModalEditableTextArea,
+	ModalLoadingFrames,
 } from './Modal.styles';
 import { Icons } from '../../themes';
 import moment from 'moment';
@@ -34,21 +35,17 @@ import {
 	deleteTask,
 	editTask,
 	deleteTaskInCol,
+	callingServer,
+	calledServer,
 } from '../../redux';
 import { API } from '../../api/callAPI';
-
-function uuidv4() {
-	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-		var r = (Math.random() * 16) | 0,
-			v = c === 'x' ? r : (r & 0x3) | 0x8;
-		return v.toString(16);
-	});
-}
+import { Spinner } from '../index';
 
 function Modal() {
 	const { tmpTask } = useSelector((state) => state.task);
 	const { isOpenModal, isEditing } = useSelector((state) => state.modal);
 	const dispatch = useDispatch();
+	const { isLoadingServer } = useSelector((state) => state.loading);
 
 	const [tmpTitle, setTmpTitle] = useState('');
 	const [tmpDescription, setTmpDescription] = useState('');
@@ -59,6 +56,8 @@ function Modal() {
 		const tmpArrColor = tmpColor?.split('+');
 		const bgColor = tmpArrColor[0];
 		const textColor = tmpArrColor[1];
+
+		dispatch(callingServer());
 		if (!isEditing) {
 			API.createTask({
 				newData: {
@@ -75,26 +74,11 @@ function Modal() {
 				.then((res) => {
 					dispatch(addTask(res.data));
 					dispatch(addTaskCol(res.data._id));
+					dispatch(openModal(false));
+					dispatch(calledServer());
 				})
 				.catch((err) => console.log(err));
 		} else {
-			dispatch(
-				editTask({
-					_id: tmpTask._id,
-					taskId: tmpTask._id,
-					newData: {
-						id: tmpTask._id,
-						title: tmpTitle,
-						tag: {
-							name: tmpTag,
-							bgColor: bgColor,
-							color: textColor,
-						},
-						content: tmpDescription,
-						createdAt: moment().format('MMM Do'),
-					},
-				})
-			);
 			API.editTask({
 				_id: tmpTask._id,
 				taskId: tmpTask._id,
@@ -109,9 +93,14 @@ function Modal() {
 					content: tmpDescription,
 					createdAt: moment().format('MMM Do'),
 				},
-			});
+			})
+				.then((res) => {
+					dispatch(editTask(res.data));
+					dispatch(openModal(false));
+					dispatch(calledServer());
+				})
+				.catch(() => console.log('Edit fail!'));
 		}
-		dispatch(openModal());
 		setTmpTitle('');
 		setTmpDescription('');
 		setTmpTag('');
@@ -119,9 +108,9 @@ function Modal() {
 	};
 
 	const handleClose = () => {
-		dispatch(openModal());
+		dispatch(openModal(false));
 		if (isEditing) {
-			dispatch(editing());
+			dispatch(editing(false));
 		}
 	};
 
@@ -134,9 +123,9 @@ function Modal() {
 		dispatch(deleteTask(tmpTask._id));
 		API.deleteTask(tmpTask._id)
 			.then((res) => console.log('Delete'))
-			.catch((err) => console.log('ERrr'));
-		dispatch(editing());
-		dispatch(openModal());
+			.catch((err) => console.log('Error'));
+		dispatch(openModal(false));
+		dispatch(editing(false));
 		setTmpTitle('');
 		setTmpDescription('');
 		setTmpTag('');
@@ -162,6 +151,11 @@ function Modal() {
 	return (
 		<ModalContainer display={isOpenModal ? 'flex' : 'none'}>
 			<ModalBox>
+				{isLoadingServer && (
+					<ModalLoadingFrames>
+						<Spinner></Spinner>
+					</ModalLoadingFrames>
+				)}
 				<ModalHeader>
 					<ModalText fontSize="1.2rem">Add New Task</ModalText>
 					<ModalHeaderModule>
@@ -228,16 +222,6 @@ function Modal() {
 									/>
 								)}
 							</ModalFormControl>
-							{/* <ModalFormControl>
-								<ModalLabel>Image:</ModalLabel>
-								<ModalInput
-									id="image"
-									value={image}
-									onChange={(e) => handleSelectImage(e.value)}
-									type="file"
-									name="image"
-								/>
-							</ModalFormControl> */}
 							<ModalFormControl>
 								<ModalLabel>Tag:</ModalLabel>
 								{isEditing ? (

@@ -20,17 +20,19 @@ import {
 } from './CardTask.styles';
 import { useDispatch } from 'react-redux';
 import { openModal, editing, setTmpTask } from '../../redux';
-
+import moment from 'moment';
 import { Icons } from '../../themes';
 
 function CardTask({ task, index }) {
 	const dispatch = useDispatch();
 
 	const handleEdit = (taskId) => {
-		dispatch(openModal());
-		dispatch(editing());
+		dispatch(openModal(true));
+		dispatch(editing(true));
 		dispatch(setTmpTask(taskId));
 	};
+
+	console.log(task);
 
 	return (
 		<Draggable draggableId={task.taskId} index={index}>
@@ -44,10 +46,7 @@ function CardTask({ task, index }) {
 				>
 					<CardTaskContent>
 						<CardTaskTitle>{task.newData.title}</CardTaskTitle>
-						<CardTaskParagraph>
-							{task.newData.content}
-							{/* Some methods maybe better than others, depending on time constraints,	system maturity, type of product. Regardless of who isperusing thereport, what is sought is accurate information revealing an overall */}
-						</CardTaskParagraph>
+						<CardTaskParagraph>{task.newData.content}</CardTaskParagraph>
 						<CardTaskTag
 							bgColor={task.newData.tag.bgColor}
 							color={task.newData.tag.color}

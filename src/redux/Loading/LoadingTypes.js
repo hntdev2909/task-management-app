@@ -1,0 +1,2 @@
+export const CALLING_SERVER = 'CALLING_SERVER';
+export const CALLED_SERVER = 'CALLED_SERVER';
