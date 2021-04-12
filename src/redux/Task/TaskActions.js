@@ -5,6 +5,17 @@ import {
 	SET_TMP_TASK,
 	LOAD_LOCAL_TASK,
 } from './TaskTypes';
+import { API } from '../../api/callAPI';
+import {
+	calledServer,
+	callingServer,
+	addTaskCol,
+	openModal,
+	deleteTaskInCol,
+	loadLocalCol,
+	loadCol,
+	editing,
+} from '../index';
 
 const addTask = (data) => {
 	return {
@@ -27,10 +38,13 @@ const deleteTask = (id) => {
 	};
 };
 
-const setTmpTask = (id) => {
+const setTmpTask = (task, columnId) => {
 	return {
 		type: SET_TMP_TASK,
-		payload: id,
+		payload: {
+			task,
+			columnId,
+		},
 	};
 };
 
@@ -41,4 +55,97 @@ const loadLocalTask = (data) => {
 	};
 };
 
-export { addTask, editTask, deleteTask, setTmpTask, loadLocalTask };
+// middleware
+
+// DONE
+const callTaskData = () => {
+	return (dispatch) => {
+		dispatch(callingServer());
+		API.loadData()
+			.then((res) => {
+				dispatch(
+					loadLocalCol({
+						columns: res.data.columns,
+						columnOrder: res.data.columnOrder[0].columnOrder,
+					})
+				);
+				dispatch(loadLocalTask(res.data.tasks));
+				dispatch(calledServer());
+			})
+			.catch((err) => {
+				dispatch(calledServer());
+			});
+	};
+};
+
+// DONE
+const callAddTask = (data) => {
+	return (dispatch) => {
+		dispatch(callingServer());
+		API.createTask(data).then((res) => {
+			dispatch(addTask(res.data));
+			dispatch(addTaskCol({ id: res.data._id }));
+			dispatch(openModal(false));
+			dispatch(calledServer());
+		});
+	};
+};
+
+// DONE
+const callEditTask = (data) => {
+	return (dispatch) => {
+		dispatch(callingServer());
+		API.editTask(data)
+			.then((res) => {
+				dispatch(editTask(res.data));
+				dispatch(openModal(false));
+				dispatch(calledServer());
+			})
+			.catch(() => console.log('Err'));
+	};
+};
+
+// DONE
+const callEditList = (result) => {
+	return (dispatch) => {
+		dispatch(callingServer());
+		API.changeCol(result)
+			.then((res) => {
+				dispatch(loadCol(res.data));
+				setTimeout(() => {
+					dispatch(calledServer());
+				}, 1000);
+			})
+			.catch(() => {
+				dispatch(calledServer());
+			});
+	};
+};
+
+const callDeleteTask = (taskId, columnId) => {
+	return (dispatch) => {
+		dispatch(callingServer());
+		API.deleteTask({ taskId, columnId })
+			.then((res) => {
+				dispatch(deleteTaskInCol(taskId));
+				dispatch(deleteTask(taskId));
+				dispatch(openModal(false));
+				dispatch(editing(false));
+				dispatch(calledServer());
+			})
+			.catch((err) => console.log(err));
+	};
+};
+
+export {
+	callTaskData,
+	callAddTask,
+	callEditList,
+	callDeleteTask,
+	addTask,
+	editTask,
+	deleteTask,
+	setTmpTask,
+	loadLocalTask,
+	callEditTask,
+};

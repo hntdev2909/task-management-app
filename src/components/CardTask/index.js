@@ -18,21 +18,18 @@ import {
 	CardTaskListMember,
 	CardTaskListImageMember,
 } from './CardTask.styles';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { openModal, editing, setTmpTask } from '../../redux';
-import moment from 'moment';
 import { Icons } from '../../themes';
 
-function CardTask({ task, index }) {
+function CardTask({ task, index, column }) {
 	const dispatch = useDispatch();
 
 	const handleEdit = (taskId) => {
+		dispatch(setTmpTask(task, column[0]?._id));
 		dispatch(openModal(true));
 		dispatch(editing(true));
-		dispatch(setTmpTask(taskId));
 	};
-
-	console.log(task);
 
 	return (
 		<Draggable draggableId={task.taskId} index={index}>

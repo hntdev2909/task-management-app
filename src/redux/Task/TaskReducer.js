@@ -5,7 +5,6 @@ import {
 	SET_TMP_TASK,
 	LOAD_LOCAL_TASK,
 } from './TaskTypes';
-import _ from 'lodash';
 
 const initialState = {
 	tmpTask: {},
@@ -14,7 +13,7 @@ const initialState = {
 const TaskReducer = (state = initialState, action) => {
 	let tmpTaskData = { ...state };
 	switch (action.type) {
-		case LOAD_LOCAL_TASK: // DONE
+		case LOAD_LOCAL_TASK:
 			let tmpTaskLoad = {};
 			for (const task of action.payload) {
 				tmpTaskLoad[task._id] = task;
@@ -24,7 +23,7 @@ const TaskReducer = (state = initialState, action) => {
 				...tmpTaskLoad,
 			};
 
-		case ADD_TASK: // DONE
+		case ADD_TASK:
 			tmpTaskData = {
 				...tmpTaskData,
 				[action.payload.taskId]: action.payload,
@@ -32,7 +31,6 @@ const TaskReducer = (state = initialState, action) => {
 			return { ...tmpTaskData };
 
 		case EDIT_TASK:
-			console.log(action.payload);
 			tmpTaskData = {
 				...tmpTaskData,
 				[action.payload.taskId]: action.payload,
@@ -43,7 +41,6 @@ const TaskReducer = (state = initialState, action) => {
 			};
 
 		case DELETE_TASK:
-			console.log(action.payload);
 			delete tmpTaskData[action.payload];
 
 			return {
@@ -51,9 +48,12 @@ const TaskReducer = (state = initialState, action) => {
 			};
 
 		case SET_TMP_TASK:
+			let tmpListTaskData = { ...state };
+			tmpListTaskData['tmpColumn'] = action.payload.columnId;
 			return {
-				...state,
-				tmpTask: state[action.payload],
+				...tmpListTaskData,
+				tmpTask: action.payload.task,
+				tmpColumn: tmpListTaskData.tmpColumn,
 			};
 		default:
 			return state;

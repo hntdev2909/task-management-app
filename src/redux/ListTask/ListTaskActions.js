@@ -4,6 +4,7 @@ import {
 	ADD_TASK_COL,
 	DELETE_TASK_COL,
 	LOAD_LOCAL_COL,
+	LOAD_COL,
 } from './ListTaskTypes';
 
 export const changeInCol = (data) => {
@@ -37,6 +38,13 @@ export const deleteTaskInCol = (id) => {
 export const loadLocalCol = (data) => {
 	return {
 		type: LOAD_LOCAL_COL,
+		payload: data,
+	};
+};
+
+export const loadCol = (data) => {
+	return {
+		type: LOAD_COL,
 		payload: data,
 	};
 };

@@ -27,22 +27,16 @@ import CardReview from '../CardReview';
 import _ from 'lodash';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-	addTask,
 	openModal,
-	addTaskCol,
 	editing,
-	setTmpTask,
-	deleteTask,
-	editTask,
-	deleteTaskInCol,
-	callingServer,
-	calledServer,
+	callEditTask,
+	callAddTask,
+	callDeleteTask,
 } from '../../redux';
-import { API } from '../../api/callAPI';
 import { Spinner } from '../index';
 
 function Modal() {
-	const { tmpTask } = useSelector((state) => state.task);
+	const { tmpTask, tmpColumn } = useSelector((state) => state.task);
 	const { isOpenModal, isEditing } = useSelector((state) => state.modal);
 	const dispatch = useDispatch();
 	const { isLoadingServer } = useSelector((state) => state.loading);
@@ -52,14 +46,20 @@ function Modal() {
 	const [tmpTag, setTmpTag] = useState('');
 	const [tmpColor, setTmpColor] = useState('#f6fdf7+#3db452');
 
+	const resetValueInput = () => {
+		setTmpTitle('');
+		setTmpDescription('');
+		setTmpTag('');
+		setTmpColor('');
+	};
+
 	const handleSaveTask = () => {
 		const tmpArrColor = tmpColor?.split('+');
 		const bgColor = tmpArrColor[0];
 		const textColor = tmpArrColor[1];
 
-		dispatch(callingServer());
 		if (!isEditing) {
-			API.createTask({
+			let tmpData = {
 				newData: {
 					title: tmpTitle,
 					tag: {
@@ -70,16 +70,11 @@ function Modal() {
 					content: tmpDescription,
 					createdAt: moment().format('MMM Do'),
 				},
-			})
-				.then((res) => {
-					dispatch(addTask(res.data));
-					dispatch(addTaskCol(res.data._id));
-					dispatch(openModal(false));
-					dispatch(calledServer());
-				})
-				.catch((err) => console.log(err));
+			};
+
+			dispatch(callAddTask(tmpData));
 		} else {
-			API.editTask({
+			let tmpData = {
 				_id: tmpTask._id,
 				taskId: tmpTask._id,
 				newData: {
@@ -93,18 +88,10 @@ function Modal() {
 					content: tmpDescription,
 					createdAt: moment().format('MMM Do'),
 				},
-			})
-				.then((res) => {
-					dispatch(editTask(res.data));
-					dispatch(openModal(false));
-					dispatch(calledServer());
-				})
-				.catch(() => console.log('Edit fail!'));
+			};
+			dispatch(callEditTask(tmpData));
 		}
-		setTmpTitle('');
-		setTmpDescription('');
-		setTmpTag('');
-		setTmpColor('');
+		resetValueInput();
 	};
 
 	const handleClose = () => {
@@ -119,17 +106,9 @@ function Modal() {
 	};
 
 	const handleDeleteTask = () => {
-		dispatch(deleteTaskInCol(tmpTask._id));
-		dispatch(deleteTask(tmpTask._id));
-		API.deleteTask(tmpTask._id)
-			.then((res) => console.log('Delete'))
-			.catch((err) => console.log('Error'));
-		dispatch(openModal(false));
-		dispatch(editing(false));
-		setTmpTitle('');
-		setTmpDescription('');
-		setTmpTag('');
-		setTmpColor('');
+		dispatch(callDeleteTask(tmpTask._id, tmpColumn));
+
+		resetValueInput();
 	};
 
 	useEffect(() => {
@@ -141,12 +120,9 @@ function Modal() {
 				`${tmpTask.newData.tag.bgColor}+${tmpTask.newData.tag.color}`
 			);
 		} else {
-			setTmpTitle('');
-			setTmpDescription('');
-			setTmpTag('');
-			setTmpColor('');
+			resetValueInput();
 		}
-	}, [isEditing]);
+	}, [isEditing, tmpTask]);
 
 	return (
 		<ModalContainer display={isOpenModal ? 'flex' : 'none'}>

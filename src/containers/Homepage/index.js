@@ -11,37 +11,20 @@ import {
 	Modal,
 	Spinner,
 } from '../../components';
-import { loadLocalTask, loadLocalCol } from '../../redux';
+import { callTaskData } from '../../redux';
 import { useDispatch, useSelector } from 'react-redux';
-import { API } from '../../api/callAPI';
 
 function Homepage() {
-	const [isLoading, setIsLoading] = useState(false);
-
 	const dispatch = useDispatch();
-
 	const { isLoadingServer } = useSelector((state) => state.loading);
 
 	useEffect(() => {
-		setIsLoading(true);
-		API.firstCall()
-			.then((res) => {
-				console.log(res.data);
-				dispatch(
-					loadLocalCol({
-						columns: res.data.columns,
-						columnOrder: res.data.columnOrder[0].columnOrder,
-					})
-				);
-				dispatch(loadLocalTask(res.data.tasks));
-				setIsLoading(false);
-			})
-			.catch((err) => console.log(err));
+		dispatch(callTaskData());
 	}, []);
 
 	return (
 		<HomepageContainer>
-			{isLoading ? (
+			{isLoadingServer ? (
 				<HomepageLoading>
 					<Spinner></Spinner>
 				</HomepageLoading>
