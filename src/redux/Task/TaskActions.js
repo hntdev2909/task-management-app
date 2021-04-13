@@ -130,7 +130,7 @@ const callEditList = (result) => {
 				setTimeout(() => {
 					dispatch(calledServer());
 					dispatch(loadSuccess());
-				}, 1000);
+				}, 2500);
 			})
 			.catch(() => {
 				dispatch(calledServer());
