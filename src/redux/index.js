@@ -21,6 +21,8 @@ import {
 } from './ListTask/ListTaskActions';
 import { callingServer, calledServer } from './Loading/LoadingActions';
 
+import { loadSuccess, loadFailure } from './Alert/AlertActions';
+
 export {
 	addTask,
 	loadLocalTask,
@@ -42,4 +44,6 @@ export {
 	callEditList,
 	callDeleteTask,
 	callEditTask,
+	loadSuccess,
+	loadFailure,
 };

@@ -15,6 +15,8 @@ import {
 	loadLocalCol,
 	loadCol,
 	editing,
+	loadSuccess,
+	loadFailure,
 } from '../index';
 
 const addTask = (data) => {
@@ -71,9 +73,11 @@ const callTaskData = () => {
 				);
 				dispatch(loadLocalTask(res.data.tasks));
 				dispatch(calledServer());
+				dispatch(loadSuccess());
 			})
 			.catch((err) => {
 				dispatch(calledServer());
+				dispatch(loadFailure());
 			});
 	};
 };
@@ -82,12 +86,18 @@ const callTaskData = () => {
 const callAddTask = (data) => {
 	return (dispatch) => {
 		dispatch(callingServer());
-		API.createTask(data).then((res) => {
-			dispatch(addTask(res.data));
-			dispatch(addTaskCol({ id: res.data._id }));
-			dispatch(openModal(false));
-			dispatch(calledServer());
-		});
+		API.createTask(data)
+			.then((res) => {
+				dispatch(addTask(res.data));
+				dispatch(addTaskCol({ id: res.data._id }));
+				dispatch(openModal(false));
+				dispatch(calledServer());
+				dispatch(loadSuccess());
+			})
+			.catch(() => {
+				dispatch(calledServer());
+				dispatch(loadFailure());
+			});
 	};
 };
 
@@ -98,10 +108,15 @@ const callEditTask = (data) => {
 		API.editTask(data)
 			.then((res) => {
 				dispatch(editTask(res.data));
+				dispatch(editing(false));
 				dispatch(openModal(false));
 				dispatch(calledServer());
+				dispatch(loadSuccess());
 			})
-			.catch(() => console.log('Err'));
+			.catch(() => {
+				dispatch(calledServer());
+				dispatch(loadFailure());
+			});
 	};
 };
 
@@ -114,10 +129,12 @@ const callEditList = (result) => {
 				dispatch(loadCol(res.data));
 				setTimeout(() => {
 					dispatch(calledServer());
+					dispatch(loadSuccess());
 				}, 1000);
 			})
 			.catch(() => {
 				dispatch(calledServer());
+				dispatch(loadFailure());
 			});
 	};
 };
@@ -132,8 +149,12 @@ const callDeleteTask = (taskId, columnId) => {
 				dispatch(openModal(false));
 				dispatch(editing(false));
 				dispatch(calledServer());
+				dispatch(loadSuccess());
 			})
-			.catch((err) => console.log(err));
+			.catch((err) => {
+				dispatch(calledServer());
+				dispatch(loadFailure());
+			});
 	};
 };
 

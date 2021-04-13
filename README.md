@@ -1,6 +1,5 @@
 # Tasks
 
-- Add swal
 - Fix data not await
 
 # TODOs Management
