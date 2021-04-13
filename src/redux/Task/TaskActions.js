@@ -59,7 +59,6 @@ const loadLocalTask = (data) => {
 
 // middleware
 
-// DONE
 const callTaskData = () => {
 	return (dispatch) => {
 		dispatch(callingServer());
@@ -82,7 +81,6 @@ const callTaskData = () => {
 	};
 };
 
-// DONE
 const callAddTask = (data) => {
 	return (dispatch) => {
 		dispatch(callingServer());
@@ -101,7 +99,6 @@ const callAddTask = (data) => {
 	};
 };
 
-// DONE
 const callEditTask = (data) => {
 	return (dispatch) => {
 		dispatch(callingServer());
@@ -120,7 +117,6 @@ const callEditTask = (data) => {
 	};
 };
 
-// DONE
 const callEditList = (result) => {
 	return (dispatch) => {
 		dispatch(callingServer());
