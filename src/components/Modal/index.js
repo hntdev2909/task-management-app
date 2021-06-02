@@ -19,6 +19,7 @@ import {
 	ModalSubmit,
 	ModalEditable,
 	ModalEditableTextArea,
+	ModalLoadingFrames,
 } from './Modal.styles';
 import { Icons } from '../../themes';
 import moment from 'moment';
@@ -26,41 +27,39 @@ import CardReview from '../CardReview';
 import _ from 'lodash';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-	addTask,
 	openModal,
-	addTaskCol,
 	editing,
-	setTmpTask,
-	deleteTask,
-	editTask,
-	deleteTaskInCol,
+	callEditTask,
+	callAddTask,
+	callDeleteTask,
 } from '../../redux';
-import { API } from '../../api/callAPI';
-
-function uuidv4() {
-	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-		var r = (Math.random() * 16) | 0,
-			v = c === 'x' ? r : (r & 0x3) | 0x8;
-		return v.toString(16);
-	});
-}
+import { Spinner } from '../index';
 
 function Modal() {
-	const { tmpTask } = useSelector((state) => state.task);
+	const { tmpTask, tmpColumn } = useSelector((state) => state.task);
 	const { isOpenModal, isEditing } = useSelector((state) => state.modal);
 	const dispatch = useDispatch();
+	const { isLoadingServer } = useSelector((state) => state.loading);
 
 	const [tmpTitle, setTmpTitle] = useState('');
 	const [tmpDescription, setTmpDescription] = useState('');
 	const [tmpTag, setTmpTag] = useState('');
 	const [tmpColor, setTmpColor] = useState('#f6fdf7+#3db452');
 
+	const resetValueInput = () => {
+		setTmpTitle('');
+		setTmpDescription('');
+		setTmpTag('');
+		setTmpColor('');
+	};
+
 	const handleSaveTask = () => {
 		const tmpArrColor = tmpColor?.split('+');
 		const bgColor = tmpArrColor[0];
 		const textColor = tmpArrColor[1];
+
 		if (!isEditing) {
-			API.createTask({
+			let tmpData = {
 				newData: {
 					title: tmpTitle,
 					tag: {
@@ -71,31 +70,11 @@ function Modal() {
 					content: tmpDescription,
 					createdAt: moment().format('MMM Do'),
 				},
-			})
-				.then((res) => {
-					dispatch(addTask(res.data));
-					dispatch(addTaskCol(res.data._id));
-				})
-				.catch((err) => console.log(err));
+			};
+
+			dispatch(callAddTask(tmpData));
 		} else {
-			dispatch(
-				editTask({
-					_id: tmpTask._id,
-					taskId: tmpTask._id,
-					newData: {
-						id: tmpTask._id,
-						title: tmpTitle,
-						tag: {
-							name: tmpTag,
-							bgColor: bgColor,
-							color: textColor,
-						},
-						content: tmpDescription,
-						createdAt: moment().format('MMM Do'),
-					},
-				})
-			);
-			API.editTask({
+			let tmpData = {
 				_id: tmpTask._id,
 				taskId: tmpTask._id,
 				newData: {
@@ -109,19 +88,16 @@ function Modal() {
 					content: tmpDescription,
 					createdAt: moment().format('MMM Do'),
 				},
-			});
+			};
+			dispatch(callEditTask(tmpData));
 		}
-		dispatch(openModal());
-		setTmpTitle('');
-		setTmpDescription('');
-		setTmpTag('');
-		setTmpColor('');
+		resetValueInput();
 	};
 
 	const handleClose = () => {
-		dispatch(openModal());
+		dispatch(openModal(false));
 		if (isEditing) {
-			dispatch(editing());
+			dispatch(editing(false));
 		}
 	};
 
@@ -130,17 +106,9 @@ function Modal() {
 	};
 
 	const handleDeleteTask = () => {
-		dispatch(deleteTaskInCol(tmpTask._id));
-		dispatch(deleteTask(tmpTask._id));
-		API.deleteTask(tmpTask._id)
-			.then((res) => console.log('Delete'))
-			.catch((err) => console.log('ERrr'));
-		dispatch(editing());
-		dispatch(openModal());
-		setTmpTitle('');
-		setTmpDescription('');
-		setTmpTag('');
-		setTmpColor('');
+		dispatch(callDeleteTask(tmpTask._id, tmpColumn));
+
+		resetValueInput();
 	};
 
 	useEffect(() => {
@@ -152,16 +120,18 @@ function Modal() {
 				`${tmpTask.newData.tag.bgColor}+${tmpTask.newData.tag.color}`
 			);
 		} else {
-			setTmpTitle('');
-			setTmpDescription('');
-			setTmpTag('');
-			setTmpColor('');
+			resetValueInput();
 		}
-	}, [isEditing]);
+	}, [isEditing, tmpTask]);
 
 	return (
 		<ModalContainer display={isOpenModal ? 'flex' : 'none'}>
 			<ModalBox>
+				{isLoadingServer && (
+					<ModalLoadingFrames>
+						<Spinner></Spinner>
+					</ModalLoadingFrames>
+				)}
 				<ModalHeader>
 					<ModalText fontSize="1.2rem">Add New Task</ModalText>
 					<ModalHeaderModule>
@@ -228,16 +198,6 @@ function Modal() {
 									/>
 								)}
 							</ModalFormControl>
-							{/* <ModalFormControl>
-								<ModalLabel>Image:</ModalLabel>
-								<ModalInput
-									id="image"
-									value={image}
-									onChange={(e) => handleSelectImage(e.value)}
-									type="file"
-									name="image"
-								/>
-							</ModalFormControl> */}
 							<ModalFormControl>
 								<ModalLabel>Tag:</ModalLabel>
 								{isEditing ? (

@@ -1,10 +1,9 @@
 import axios from 'axios';
-import { changeInCol, deleteTask } from '../redux';
-
+// https://server-intern-idra.herokuapp.com
 const baseUrl = 'https://server-intern-idra.herokuapp.com/taskmanage';
 
 export const API = {
-	async firstCall() {
+	async loadData() {
 		return await axios.get(baseUrl);
 	},
 
@@ -16,8 +15,8 @@ export const API = {
 		return await axios.put(baseUrl + `/tasks/${task._id}`, { task });
 	},
 
-	async deleteTask(id) {
-		return await axios.delete(baseUrl + `/delete/${id}`);
+	async deleteTask(data) {
+		return await axios.delete(baseUrl + `/delete/${data.taskId}`, { data });
 	},
 
 	async changeCol(data) {

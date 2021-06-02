@@ -1,2 +1,4 @@
-export const IS_OPEN_MODAL = 'IS_OPEN_MODAL';
-export const IS_EDITING = 'IS_EDITING';
+const IS_OPEN_MODAL = 'IS_OPEN_MODAL';
+const IS_EDITING = 'IS_EDITING';
+
+export { IS_OPEN_MODAL, IS_EDITING };

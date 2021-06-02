@@ -10,13 +10,13 @@ import {
 } from './FunctionBar.styles';
 import { Icons } from '../../themes';
 import { useDispatch } from 'react-redux';
-import { openModal, setTmpTask } from '../../redux';
+import { openModal } from '../../redux';
 
 function FunctionBar() {
 	const dispatch = useDispatch();
 
 	const handleNewItem = () => {
-		dispatch(openModal());
+		dispatch(openModal(true));
 	};
 
 	return (

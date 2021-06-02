@@ -4,13 +4,14 @@ import {
 	ADD_TASK_COL,
 	DELETE_TASK_COL,
 	LOAD_LOCAL_COL,
+	LOAD_COL,
 } from './ListTaskTypes';
 
 const initialState = {};
 
 const ListTaskReducer = (state = initialState, action) => {
 	switch (action.type) {
-		case LOAD_LOCAL_COL: // DONE
+		case LOAD_LOCAL_COL:
 			let tmpCol = {};
 			for (const column of action.payload.columns) {
 				tmpCol[column.columnName] = column;
@@ -19,6 +20,17 @@ const ListTaskReducer = (state = initialState, action) => {
 				...state,
 				columns: tmpCol,
 				columnOrder: action.payload.columnOrder,
+			};
+
+		case LOAD_COL:
+			let tmpDataColumns = {};
+			for (const column of action.payload) {
+				tmpDataColumns[column.columnName] = column;
+			}
+			console.log(tmpDataColumns);
+			return {
+				...state,
+				columns: tmpDataColumns,
 			};
 
 		case ADD_TASK_COL:
@@ -52,12 +64,16 @@ const ListTaskReducer = (state = initialState, action) => {
 
 		case DELETE_TASK_COL:
 			const tmpColumns = { ...state };
+			let id = action.payload;
 			for (const col in tmpColumns.columns) {
-				var index = tmpColumns.columns[col].tasksId.indexOf(action.payload);
+				var index = tmpColumns.columns[col].tasksId.findIndex(
+					(task) => task.id == id
+				);
 				if (index !== -1) {
 					tmpColumns.columns[col].tasksId.splice(index, 1);
 				}
 			}
+
 			return {
 				...tmpColumns,
 			};

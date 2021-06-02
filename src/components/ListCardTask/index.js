@@ -16,8 +16,7 @@ import {
 import CardTask from '../CardTask';
 import { Icons } from '../../themes';
 import { useDispatch, useSelector } from 'react-redux';
-import { changeInCol, changeBetweenCol } from '../../redux';
-import { API } from '../../api/callAPI';
+import { callEditList } from '../../redux';
 
 function ListCardTask() {
 	const dispatch = useDispatch();
@@ -25,82 +24,11 @@ function ListCardTask() {
 	const tasks = useSelector((state) => state.task);
 
 	const onDragEnd = (result) => {
-		const { destination, source, draggableId } = result;
-
-		if (!destination) {
-			return;
-		}
-
-		if (
-			destination.droppableId === source.droppableId &&
-			destination.index === source.index
-		) {
-			return;
-		}
-
-		let start, finish;
-		let nameStart, nameEnd;
-
-		for (let column in columns) {
-			if (columns[column]._id === source.droppableId) {
-				start = columns[column];
-				nameStart = column;
-			}
-
-			if (columns[column]._id === destination.droppableId) {
-				finish = columns[column];
-				nameEnd = column;
-			}
-		}
-
-		if (start === finish) {
-			const col = nameStart;
-			const newTaskIds = Array.from(start.tasksId);
-			newTaskIds.splice(source.index, 1);
-			newTaskIds.splice(destination.index, 0, draggableId);
-			dispatch(
-				changeInCol({
-					col,
-					newTaskIds,
-				})
-			);
-
-			API.changeCol({
+		dispatch(
+			callEditList({
 				result,
 			})
-				.then(() => console.log('Changed'))
-				.catch(() => console.log('Err'));
-		} else {
-			const startTasksId = Array.from(start.tasksId);
-			startTasksId.splice(source.index, 1);
-			const newStart = {
-				...start,
-				tasksId: startTasksId,
-			};
-
-			const finishTasksId = Array.from(finish.tasksId);
-			finishTasksId.splice(destination.index, 0, draggableId);
-			const newFinish = {
-				...finish,
-				tasksId: finishTasksId,
-			};
-
-			dispatch(
-				changeBetweenCol({
-					columns: {
-						...columns,
-						[newStart.columnName]: newStart,
-						[newFinish.columnName]: newFinish,
-					},
-				})
-			);
-
-			API.changeCol({
-				result,
-			})
-				.then(() => console.log('Changed'))
-				.catch(() => console.log('Err'));
-		}
+		);
 	};
 
 	return (
@@ -113,7 +41,7 @@ function ListCardTask() {
 							(column) => column.columnName === columnId
 						);
 						const todos = _.map(column[0].tasksId, (taskId) => {
-							return tasks[taskId];
+							return tasks[taskId.id];
 						});
 
 						return (
@@ -153,6 +81,7 @@ function ListCardTask() {
 														index={index}
 														key={task.taskId}
 														task={task}
+														column={column}
 													/>
 												);
 											})}

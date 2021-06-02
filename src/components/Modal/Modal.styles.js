@@ -98,18 +98,32 @@ const ModalSubmit = styled.a`
 `;
 
 const ModalTextArea = styled.textarea`
-	font-size: 1.05rem;
+	font-size: 1rem;
 	outline: none;
 	flex: 1;
 	font-family: inherit;
 	padding: 4px 2px;
 `;
 const ModalInput = styled.input`
-	font-size: 1.05rem;
+	font-size: 1rem;
 	outline: none;
 	padding: 4px 2px;
 	flex: 1;
 `;
+
+const ModalLoadingFrames = styled.div`
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	position: absolute;
+	background-color: rgba(0, 0, 0, 0.4);
+	z-index: 3;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+`;
+
 const ModalLabel = styled.label`
 	font-size: 1.05rem;
 	min-width: 110px;
@@ -124,6 +138,7 @@ const ModalFormControl = styled.div`
 `;
 const ModalForm = styled.form`
 	padding-top: 24px;
+	padding-bottom: 16px;
 `;
 
 const ModalContentDescription = styled.div`
@@ -138,6 +153,7 @@ const ModalContentPost = styled.div`
 
 const ModalContent = styled.div`
 	display: flex;
+	margin-top: 10px;
 `;
 
 const ModalHeaderModule = styled.div`
@@ -149,13 +165,16 @@ const ModalHeader = styled.div`
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	border-bottom: 1.5px solid #ccc;
 `;
 
 const ModalBox = styled.div`
 	width: 100%;
 	max-width: 1040px;
 	background-color: white;
-	padding: 16px;
+	padding: 16px 32px;
+	position: relative;
+	border-radius: 5px;
 `;
 
 const ModalContainer = styled.div`
@@ -192,4 +211,5 @@ export {
 	ModalTextArea,
 	ModalSubmit,
 	ModalEditableTextArea,
+	ModalLoadingFrames,
 };
